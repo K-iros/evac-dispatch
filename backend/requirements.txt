@@ -1,0 +1,14 @@
+# 灾前疏散调度后端（FastAPI）
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.8
+
+# 地理计算（核心算法层）
+numpy>=1.26
+rasterio>=1.4        # 读取 Copernicus DEM / FABDEM
+shapely>=2.0         # 淹没多边形 / 路径求交
+pyproj>=3.6
+landlab>=2.11        # OverlandFlow 简化水动力淹没推演（离线预计算）
+
+# Valhalla 路由服务的 HTTP 客户端
+httpx>=0.27

@@ -1,0 +1,39 @@
+<view class="page">
+  <!-- 统计头 -->
+  <view class="stats">
+    <view class="stat">
+      <text class="stat-num">{{stats.total}}</text>
+      <text class="stat-label">待撤离总数</text>
+    </view>
+    <view class="stat">
+      <text class="stat-num stat-red">{{stats.unmatched}}</text>
+      <text class="stat-label">未匹配</text>
+    </view>
+    <view class="stat">
+      <text class="stat-num stat-green">{{stats.evacuated}}</text>
+      <text class="stat-label">已撤离</text>
+    </view>
+  </view>
+
+  <!-- 名单（按最迟出发时间升序） -->
+  <view class="card" wx:for="{{items}}" wx:key="id" data-id="{{item.id}}" bindtap="onItemTap">
+    <view class="card-left">
+      <view class="row">
+        <text class="profile">{{item.profileIcon}}</text>
+        <text class="name">{{item.name}}</text>
+        <text class="tag {{item.status.cls}}">{{item.status.label}}</text>
+      </view>
+      <view class="address">{{item.address}}</view>
+      <view class="meta">
+        <text>画像：{{item.profileLabel}}</text>
+        <text>帮扶：{{item.helperCount}} 人</text>
+      </view>
+    </view>
+    <view class="card-right">
+      <text class="departure">最迟 {{item.departure}}</text>
+      <text class="countdown {{item.urgent ? 'urgent' : ''}}">{{item.countdownText}}</text>
+    </view>
+  </view>
+
+  <view wx:if="{{!items.length}}" class="empty">暂无待撤离人员</view>
+</view>

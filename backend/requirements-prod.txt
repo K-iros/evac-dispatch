@@ -1,0 +1,9 @@
+# 生产运行时依赖(Docker 镜像用)
+# 与 requirements.txt 的差异:剔除 rasterio / landlab / pyproj——
+# 它们只被 scripts/ 下的离线数据管线使用,运行时 app/ 仅依赖以下包
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.8
+numpy>=1.26
+shapely>=2.0
+httpx>=0.27

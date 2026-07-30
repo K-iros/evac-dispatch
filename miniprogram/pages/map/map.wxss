@@ -1,0 +1,123 @@
+.page {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+}
+
+.overlay {
+  position: absolute;
+  left: 24rpx;
+  right: 24rpx;
+  z-index: 10;
+}
+
+.top {
+  top: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.alert-badge {
+  padding: 10rpx 24rpx;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  font-weight: 700;
+  box-shadow: 0 4rpx 12rpx rgba(15, 23, 42, 0.15);
+}
+
+.frame-info {
+  display: flex;
+  gap: 16rpx;
+  padding: 10rpx 24rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.92);
+  font-size: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(15, 23, 42, 0.15);
+}
+
+.water {
+  color: #0369a1;
+  font-weight: 700;
+}
+
+.satellite-btn {
+  position: absolute;
+  left: 24rpx;
+  top: 120rpx;
+  z-index: 10;
+  padding: 12rpx 24rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.94);
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #334155;
+  box-shadow: 0 4rpx 12rpx rgba(15, 23, 42, 0.15);
+}
+
+.satellite-btn.on {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.bottom {
+  bottom: 32rpx;
+  padding: 20rpx 24rpx 12rpx;
+  border-radius: 20rpx;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 6rpx 20rpx rgba(15, 23, 42, 0.18);
+}
+
+.timeline-title {
+  font-size: 24rpx;
+  color: #475569;
+  font-weight: 600;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #475569;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.dot {
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+}
+
+.dot-evacuee {
+  background: #f97316;
+}
+
+.dot-alert {
+  background: #ef4444;
+}
+
+.dot-helper {
+  background: #3b82f6;
+}
+
+.dot-shelter {
+  background: #10b981;
+}
+
+.dot-flood {
+  background: rgba(59, 130, 246, 0.4);
+  border: 1rpx solid #2563eb;
+  border-radius: 4rpx;
+}

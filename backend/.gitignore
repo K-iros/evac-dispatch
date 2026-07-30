@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 大体积原始数据不入库；但 data/ 下的预计算 JSON 与裁剪后小 DEM
+# 是运行时必需产物（共约 33MB），随仓库分发保证部署可重现
+*.pbf
+*.osm.pbf
+*.tif
+*.tiff
+!data/*.json
+!data/yangshuo_dem_utm.tif
+
+# 环境
+.env

@@ -1,0 +1,63 @@
+/** 全局样式 */
+page {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-size: 28rpx;
+  height: 100%;
+}
+
+/* 匹配状态标签（与 utils/format.js STATUS_META.cls 对应） */
+.tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+}
+
+.tag-red {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.tag-blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.tag-amber {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.tag-green {
+  background: #d1fae5;
+  color: #047857;
+}
+
+.tag-gray {
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+/* 分级响应徽标（与 utils/format.js ALERT_META.cls 对应） */
+.alert-standby {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.alert-ready {
+  background: #fde68a;
+  color: #92400e;
+}
+
+.alert-dispatch {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+/* 倒计时紧迫态 */
+.urgent {
+  color: #dc2626;
+  font-weight: 700;
+}

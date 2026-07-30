@@ -1,0 +1,6 @@
+# frontend 构建上下文排除项
+node_modules
+dist
+*.log
+.gitignore
+README.md

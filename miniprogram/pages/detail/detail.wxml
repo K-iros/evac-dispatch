@@ -1,0 +1,59 @@
+<view class="page" wx:if="{{evacuee}}">
+  <!-- 基本信息卡 -->
+  <view class="card">
+    <view class="head">
+      <text class="profile">{{profile.icon}}</text>
+      <view class="head-main">
+        <view class="row">
+          <text class="name">{{evacuee.name}}</text>
+          <text class="tag {{status.cls}}">{{status.label}}</text>
+        </view>
+        <text class="sub">画像：{{profile.label}}</text>
+      </view>
+    </view>
+    <view class="field">
+      <text class="field-label">住址</text>
+      <text class="field-value">{{evacuee.address}}</text>
+    </view>
+    <view class="field">
+      <text class="field-label">最迟出发</text>
+      <text class="field-value">{{departure}}（<text class="{{urgent ? 'urgent' : ''}}">{{countdownText}}</text>）</text>
+    </view>
+    <view class="field" wx:if="{{shelter}}">
+      <text class="field-label">目标避难所</text>
+      <text class="field-value">{{shelter.name}}{{shelter.wheelchairAccessible ? '（无障碍）' : ''}}</text>
+    </view>
+    <view class="field" wx:else>
+      <text class="field-label">目标避难所</text>
+      <text class="field-value warn">未分配</text>
+    </view>
+  </view>
+
+  <!-- 帮扶者（冗余匹配：主帮扶 + 备份） -->
+  <view class="card">
+    <view class="card-title">帮扶者</view>
+    <view class="helper" wx:for="{{helpers}}" wx:key="id">
+      <text class="helper-name">🤝 {{item.name}}</text>
+      <view class="helper-right">
+        <text class="tag {{item.available ? 'tag-blue' : 'tag-gray'}}">{{item.role}}</text>
+        <text wx:if="{{!item.available}}" class="tag tag-red">不可用</text>
+      </view>
+    </view>
+    <view wx:if="{{!helpers.length}}" class="warn">⚠ 尚无帮扶者，请优先补位</view>
+  </view>
+
+  <!-- 任务路线小地图 -->
+  <view class="card">
+    <view class="card-title">任务路线（帮扶者 → 家 → 避难所）</view>
+    <map
+      class="mini-map"
+      longitude="{{mapCenter.lng}}"
+      latitude="{{mapCenter.lat}}"
+      scale="15"
+      markers="{{markers}}"
+      polyline="{{polylines}}"
+    />
+  </view>
+
+  <button class="nav-btn" type="primary" bindtap="onNavigate">导航到该户</button>
+</view>

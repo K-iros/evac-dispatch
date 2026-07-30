@@ -1,0 +1,38 @@
+{
+  "pages": [
+    "pages/map/map",
+    "pages/list/list",
+    "pages/detail/detail"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#0f172a",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "灾前疏散调度",
+    "backgroundColor": "#f1f5f9",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#64748b",
+    "selectedColor": "#0284c7",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/map/map",
+        "text": "态势图"
+      },
+      {
+        "pagePath": "pages/list/list",
+        "text": "撤离名单"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于在态势图上展示您与帮扶对象的相对位置"
+    }
+  },
+  "requiredPrivateInfos": ["getLocation"],
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

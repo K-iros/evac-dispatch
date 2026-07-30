@@ -1,0 +1,5 @@
+# 行尾规范:shell 脚本与部署配置必须 LF(Linux 服务器执行)
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.yml text eol=lf
+nginx.conf text eol=lf

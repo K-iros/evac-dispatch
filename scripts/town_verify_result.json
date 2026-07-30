@@ -1,0 +1,34 @@
+{
+  "验证时间": "2026-07-29",
+  "说明": "PROJECT_CONTEXT 第十节城镇验证 Overpass 统计结果，bbox=(south,west,north,east)",
+  "贵州榕江县城": {
+    "bbox": [25.90, 108.48, 25.97, 108.56],
+    "highway 总 way 数": 326,
+    "footway/path": 28,
+    "steps 台阶": 0,
+    "wheelchair=* (way)": 0,
+    "wheelchair=* (node)": 0,
+    "tactile_paving": 0,
+    "建筑轮廓": 35
+  },
+  "重庆磁器口/沙坪坝片区": {
+    "bbox": [29.54, 106.40, 29.62, 106.50],
+    "highway 总 way 数": 3683,
+    "footway/path": 795,
+    "steps 台阶": 176,
+    "wheelchair=* (way)": 3,
+    "wheelchair=* (node)": 10,
+    "tactile_paving": 0,
+    "建筑轮廓": 1316
+  },
+  "广西阳朔县城": {
+    "bbox": [24.74, 110.45, 24.81, 110.53],
+    "highway 总 way 数": 1096,
+    "footway/path": 311,
+    "steps 台阶": 43,
+    "wheelchair=* (way)": 2,
+    "wheelchair=* (node)": 3,
+    "tactile_paving": 0,
+    "建筑轮廓": 355
+  }
+}

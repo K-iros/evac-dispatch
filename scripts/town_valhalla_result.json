@@ -1,0 +1,390 @@
+{
+  "贵州榕江县城": {
+    "summary": {
+      "试跑对数": 5,
+      "wheelchair 成功": 5,
+      "foot 成功": 5,
+      "wheelchair 平均绕行倍率": 1.41
+    },
+    "records": [
+      {
+        "name": "试跑1",
+        "start": [
+          108.5233179,
+          25.9413029
+        ],
+        "end": [
+          108.5261108,
+          25.9270119
+        ],
+        "straight_m": 1604,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 2153.0,
+          "duration_min": 44.7,
+          "detour_ratio": 1.34
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 2153.0,
+          "duration_min": 35.1,
+          "detour_ratio": 1.34
+        }
+      },
+      {
+        "name": "试跑2",
+        "start": [
+          108.5250193,
+          25.9472948
+        ],
+        "end": [
+          108.5152311,
+          25.9266758
+        ],
+        "straight_m": 2480,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 2602.0,
+          "duration_min": 41.6,
+          "detour_ratio": 1.05
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 2602.0,
+          "duration_min": 32.6,
+          "detour_ratio": 1.05
+        }
+      },
+      {
+        "name": "试跑3",
+        "start": [
+          108.5140718,
+          25.9408874
+        ],
+        "end": [
+          108.5198348,
+          25.9333315
+        ],
+        "straight_m": 1015,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 2058.0,
+          "duration_min": 36.5,
+          "detour_ratio": 2.03
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 2058.0,
+          "duration_min": 28.6,
+          "detour_ratio": 2.03
+        }
+      },
+      {
+        "name": "试跑4",
+        "start": [
+          108.5172611,
+          25.9406006
+        ],
+        "end": [
+          108.5269172,
+          25.9427655
+        ],
+        "straight_m": 995,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 1311.0,
+          "duration_min": 20.5,
+          "detour_ratio": 1.32
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 1311.0,
+          "duration_min": 16.1,
+          "detour_ratio": 1.32
+        }
+      },
+      {
+        "name": "试跑5",
+        "start": [
+          108.5050842,
+          25.922014
+        ],
+        "end": [
+          108.5124163,
+          25.9435936
+        ],
+        "straight_m": 2495,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 3306.0,
+          "duration_min": 54.8,
+          "detour_ratio": 1.33
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 3306.0,
+          "duration_min": 43.0,
+          "detour_ratio": 1.33
+        }
+      }
+    ]
+  },
+  "重庆磁器口/沙坪坝片区": {
+    "summary": {
+      "试跑对数": 5,
+      "wheelchair 成功": 5,
+      "foot 成功": 5,
+      "wheelchair 平均绕行倍率": 1.48
+    },
+    "records": [
+      {
+        "name": "试跑1",
+        "start": [
+          106.4596768,
+          29.5698869
+        ],
+        "end": [
+          106.4530347,
+          29.5757014
+        ],
+        "straight_m": 909,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 1053.0,
+          "duration_min": 15.0,
+          "detour_ratio": 1.16
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 1053.0,
+          "duration_min": 11.8,
+          "detour_ratio": 1.16
+        }
+      },
+      {
+        "name": "试跑2",
+        "start": [
+          106.4742954,
+          29.5628927
+        ],
+        "end": [
+          106.4805163,
+          29.5685156
+        ],
+        "straight_m": 865,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 2015.0,
+          "duration_min": 36.4,
+          "detour_ratio": 2.33
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 2015.0,
+          "duration_min": 28.5,
+          "detour_ratio": 2.33
+        }
+      },
+      {
+        "name": "试跑3",
+        "start": [
+          106.4971132,
+          29.5909881
+        ],
+        "end": [
+          106.4894477,
+          29.6047773
+        ],
+        "straight_m": 1695,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 2377.0,
+          "duration_min": 40.3,
+          "detour_ratio": 1.4
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 2377.0,
+          "duration_min": 31.6,
+          "detour_ratio": 1.4
+        }
+      },
+      {
+        "name": "试跑4",
+        "start": [
+          106.4892445,
+          29.5891122
+        ],
+        "end": [
+          106.4957156,
+          29.5763579
+        ],
+        "straight_m": 1542,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 1696.0,
+          "duration_min": 28.2,
+          "detour_ratio": 1.1
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 1696.0,
+          "duration_min": 22.1,
+          "detour_ratio": 1.1
+        }
+      },
+      {
+        "name": "试跑5",
+        "start": [
+          106.5010307,
+          29.618198
+        ],
+        "end": [
+          106.486173,
+          29.603669
+        ],
+        "straight_m": 2155,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 3040.0,
+          "duration_min": 52.6,
+          "detour_ratio": 1.41
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 3040.0,
+          "duration_min": 41.3,
+          "detour_ratio": 1.41
+        }
+      }
+    ]
+  },
+  "广西阳朔县城": {
+    "summary": {
+      "试跑对数": 5,
+      "wheelchair 成功": 4,
+      "foot 成功": 5,
+      "wheelchair 平均绕行倍率": 1.15
+    },
+    "records": [
+      {
+        "name": "试跑1",
+        "start": [
+          110.4987522,
+          24.7716055
+        ],
+        "end": [
+          110.4744148,
+          24.7735435
+        ],
+        "straight_m": 2469,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 3221.0,
+          "duration_min": 52.5,
+          "detour_ratio": 1.3
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 3221.0,
+          "duration_min": 41.3,
+          "detour_ratio": 1.3
+        }
+      },
+      {
+        "name": "试跑2",
+        "start": [
+          110.4792087,
+          24.7754885
+        ],
+        "end": [
+          110.4910466,
+          24.7761998
+        ],
+        "straight_m": 1199,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 1345.0,
+          "duration_min": 22.0,
+          "detour_ratio": 1.12
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 1345.0,
+          "duration_min": 17.3,
+          "detour_ratio": 1.12
+        }
+      },
+      {
+        "name": "试跑3",
+        "start": [
+          110.4773751,
+          24.7759791
+        ],
+        "end": [
+          110.4912497,
+          24.7762229
+        ],
+        "straight_m": 1402,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 1533.0,
+          "duration_min": 25.0,
+          "detour_ratio": 1.09
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 1533.0,
+          "duration_min": 19.7,
+          "detour_ratio": 1.09
+        }
+      },
+      {
+        "name": "试跑4",
+        "start": [
+          110.4765961,
+          24.7415882
+        ],
+        "end": [
+          110.493665,
+          24.740074
+        ],
+        "straight_m": 1733,
+        "wheelchair": {
+          "ok": false,
+          "error": "HTTP 400: No path could be found for input"
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 2370.0,
+          "duration_min": 30.9,
+          "detour_ratio": 1.37
+        }
+      },
+      {
+        "name": "试跑5",
+        "start": [
+          110.4864497,
+          24.7772858
+        ],
+        "end": [
+          110.4986215,
+          24.7907171
+        ],
+        "straight_m": 1928,
+        "wheelchair": {
+          "ok": true,
+          "distance_m": 2106.0,
+          "duration_min": 35.5,
+          "detour_ratio": 1.09
+        },
+        "foot": {
+          "ok": true,
+          "distance_m": 2106.0,
+          "duration_min": 27.9,
+          "detour_ratio": 1.09
+        }
+      }
+    ]
+  }
+}

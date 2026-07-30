@@ -1,0 +1,179 @@
+{
+  "贵州榕江县城": [
+    {
+      "pair": "试跑1 (~1604m)",
+      "start": [
+        108.5233179,
+        25.9413029
+      ],
+      "end": [
+        108.5261108,
+        25.9270119
+      ],
+      "wheelchair": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      },
+      "foot-walking": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      }
+    },
+    {
+      "pair": "试跑2 (~1990m)",
+      "start": [
+        108.517773,
+        25.9231978
+      ],
+      "end": [
+        108.5140718,
+        25.9408874
+      ],
+      "wheelchair": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      },
+      "foot-walking": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      }
+    },
+    {
+      "pair": "试跑3 (~1003m)",
+      "start": [
+        108.5196059,
+        25.9397268
+      ],
+      "end": [
+        108.5144272,
+        25.9319528
+      ],
+      "wheelchair": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      },
+      "foot-walking": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      }
+    }
+  ],
+  "重庆磁器口/沙坪坝片区": [
+    {
+      "pair": "试跑1 (~909m)",
+      "start": [
+        106.4596768,
+        29.5698869
+      ],
+      "end": [
+        106.4530347,
+        29.5757014
+      ],
+      "wheelchair": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      },
+      "foot-walking": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      }
+    },
+    {
+      "pair": "试跑2 (~1320m)",
+      "start": [
+        106.4897043,
+        29.6010148
+      ],
+      "end": [
+        106.4971132,
+        29.5909881
+      ],
+      "wheelchair": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      },
+      "foot-walking": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      }
+    },
+    {
+      "pair": "试跑3 (~1653m)",
+      "start": [
+        106.4890965,
+        29.5901469
+      ],
+      "end": [
+        106.4957156,
+        29.5763579
+      ],
+      "wheelchair": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      },
+      "foot-walking": {
+        "ok": false,
+        "error": "<urlopen error [WinError 10060] 由于连接方在一段时间后没有正确答复或连接的主机没有反应，连接尝试失败。>"
+      }
+    }
+  ],
+  "广西阳朔县城": [
+    {
+      "pair": "试跑1 (~2469m)",
+      "start": [
+        110.4987522,
+        24.7716055
+      ],
+      "end": [
+        110.4744148,
+        24.7735435
+      ],
+      "wheelchair": {
+        "ok": false,
+        "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'api.openrouteservice.org'. (_ssl.c:1032)>"
+      },
+      "foot-walking": {
+        "ok": false,
+        "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'api.openrouteservice.org'. (_ssl.c:1032)>"
+      }
+    },
+    {
+      "pair": "试跑2 (~1369m)",
+      "start": [
+        110.477813,
+        24.7735425
+      ],
+      "end": [
+        110.4910466,
+        24.7761998
+      ],
+      "wheelchair": {
+        "ok": false,
+        "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'api.openrouteservice.org'. (_ssl.c:1032)>"
+      },
+      "foot-walking": {
+        "ok": false,
+        "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'api.openrouteservice.org'. (_ssl.c:1032)>"
+      }
+    },
+    {
+      "pair": "试跑3 (~1374m)",
+      "start": [
+        110.4776838,
+        24.7754095
+      ],
+      "end": [
+        110.4912497,
+        24.7762229
+      ],
+      "wheelchair": {
+        "ok": false,
+        "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'api.openrouteservice.org'. (_ssl.c:1032)>"
+      },
+      "foot-walking": {
+        "ok": false,
+        "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'api.openrouteservice.org'. (_ssl.c:1032)>"
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+# 根构建上下文的 .dockerignore(backend 镜像用)
+# 只放行后端代码 + data + 街景图,其余全部排除,加速构建上下文传输
+*
+!backend/app/
+!backend/data/
+!backend/requirements-prod.txt
+!frontend/public/streetview/
+
+# 排除缓存类
+**/__pycache__/
+**/*.pyc

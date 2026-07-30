@@ -1,0 +1,43 @@
+# 灾前疏散调度大脑 - 生产部署编排
+# 用法:docker compose up -d --build
+# LLM Key 可选:导出 DEEPSEEK_API_KEY / DASHSCOPE_API_KEY 环境变量
+# (或写入同目录 .env 文件),缺省时后端自动模板兜底,不阻塞启动
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: evac-backend
+    environment:
+      - DEEPSEEK_API_KEY=${DEEPSEEK_API_KEY:-}
+      - DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY:-}
+    restart: unless-stopped
+    # 健康检查用轻量接口 /api/scenarios(不触发 schedule 冷启动求解);
+    # start_period 放宽到 60s 容忍进程启动与数据加载
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/scenarios', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: evac-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

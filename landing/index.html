@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>灾前疏散调度大脑：洪水到来之前，每个人的出发时刻都已算好</title>
+<meta name="description" content="面向社区帮扶者与网格员的灾前疏散调度工具：水动力推演、最迟出发时间、无障碍路径与帮扶匹配，一屏完成。" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230b0f14'/%3E%3Cpath d='M6 21c3-2 5-2 8 0s5 2 8 0' stroke='%23e8a63d' stroke-width='2.4' fill='none' stroke-linecap='round'/%3E%3Cpath d='M16 15V7m0 0l-4 4m4-4l4 4' stroke='%23e8edf2' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<script>
+/* 验证钩子：?noanim=1 跳过入场动画，供 headless 截图与回归测试 */
+if (/[?&]noanim/.test(location.search)) document.documentElement.classList.add("noanim");
+</script>
+<style>
+/* ============ 设计令牌：暗色指挥中心，单一琥珀 accent ============ */
+/* 圆角规则：面板/图框 16px，按钮全圆角 pill，小标签 8px，全站一致 */
+:root{
+  --bg:#0b0f14;
+  --bg-raise:#10161e;
+  --bg-panel:#131a23;
+  --line:rgba(232,237,242,.09);
+  --line-strong:rgba(232,237,242,.16);
+  --text:#e8edf2;
+  --text-2:#a7b2be;
+  --text-3:#6d7987;
+  --amber:#e8a63d;
+  --amber-soft:rgba(232,166,61,.14);
+  --amber-line:rgba(232,166,61,.35);
+  --r-panel:16px;
+  --r-chip:8px;
+  --font-sans:"PingFang SC","Microsoft YaHei UI","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;
+  --font-mono:"JetBrains Mono","Cascadia Code",ui-monospace,Consolas,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--font-sans);
+  font-size:16px;line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--amber);color:#14100a}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+/* ============ 滚动显现（IntersectionObserver 驱动） ============ */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.rv-d1{transition-delay:.08s}.rv-d2{transition-delay:.16s}.rv-d3{transition-delay:.24s}
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+}
+
+/* ============ 导航 ============ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  height:64px;display:flex;align-items:center;
+  padding:0 clamp(20px,4vw,48px);
+  border-bottom:1px solid transparent;
+  transition:background .4s,border-color .4s,backdrop-filter .4s;
+}
+.nav.scrolled{
+  background:rgba(11,15,20,.82);
+  border-color:var(--line);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em}
+.nav-brand svg{flex:none}
+.nav-links{display:flex;gap:32px;margin-left:auto;margin-right:32px;font-size:14px;color:var(--text-2)}
+.nav-links a{transition:color .25s}
+.nav-links a:hover{color:var(--text)}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  border-radius:999px;font-weight:600;white-space:nowrap;
+  transition:transform .25s var(--ease),background .25s,box-shadow .25s;
+  cursor:pointer;border:none;
+}
+.btn:active{transform:scale(.97)}
+.btn-amber{
+  background:var(--amber);color:#14100a;
+  padding:10px 22px;font-size:14px;
+}
+.btn-amber:hover{background:#f2b658;box-shadow:0 6px 28px rgba(232,166,61,.28)}
+.btn-ghost{
+  color:var(--text-2);padding:10px 20px;font-size:14px;
+  border:1px solid var(--line-strong);background:transparent;
+}
+.btn-ghost:hover{color:var(--text);border-color:rgba(232,237,242,.32)}
+.btn-lg{padding:15px 34px;font-size:16px}
+
+/* ============ Hero：左文右图非对称分屏 ============ */
+.hero{
+  min-height:100dvh;
+  display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+  gap:clamp(32px,5vw,72px);align-items:center;
+  max-width:1280px;margin:0 auto;
+  padding:96px clamp(20px,4vw,48px) 48px;
+  position:relative;
+}
+.hero-bg{
+  position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;
+}
+.hero-bg::before{
+  content:"";position:absolute;
+  width:900px;height:900px;right:-320px;top:-380px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,166,61,.09),transparent 62%);
+}
+.hero-bg::after{
+  content:"";position:absolute;left:0;right:0;bottom:0;height:38%;
+  background:linear-gradient(to top,rgba(38,74,110,.16),transparent);
+}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12.5px;letter-spacing:.14em;color:var(--amber);
+  font-weight:600;text-transform:uppercase;
+}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--amber-line)}
+.hero h1{
+  font-size:clamp(34px,4vw,50px);
+  line-height:1.22;letter-spacing:-.015em;font-weight:800;
+  margin:22px 0 24px;
+}
+.hero h1 .accent{color:var(--amber)}
+.hero-sub{
+  font-size:clamp(15px,1.3vw,17.5px);color:var(--text-2);
+  max-width:34em;margin-bottom:36px;
+}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap}
+.hero-visual{position:relative;justify-self:end;width:min(100%,420px)}
+.shot-frame{
+  border-radius:var(--r-panel);overflow:hidden;
+  border:1px solid var(--line-strong);
+  box-shadow:0 24px 80px rgba(0,0,0,.55),0 4px 18px rgba(0,0,0,.4);
+  background:var(--bg-panel);
+}
+.shot-frame .bar{
+  height:34px;display:flex;align-items:center;gap:6px;
+  padding:0 14px;border-bottom:1px solid var(--line);
+  background:var(--bg-raise);
+}
+.shot-frame .bar i{width:9px;height:9px;border-radius:50%;background:rgba(232,237,242,.14)}
+.shot-frame .bar span{
+  margin-left:8px;font-family:var(--font-mono);font-size:11px;color:var(--text-3);
+}
+.hero-shot{position:relative}
+/* 浮动标注卡：真实数据，锚在图上 */
+.float-chip{
+  position:absolute;z-index:2;
+  background:rgba(16,22,30,.92);border:1px solid var(--line-strong);
+  border-radius:var(--r-chip);padding:10px 14px;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  box-shadow:0 10px 34px rgba(0,0,0,.5);
+  font-size:12px;color:var(--text-2);line-height:1.5;
+}
+.float-chip strong{
+  display:block;font-family:var(--font-mono);font-size:17px;
+  color:var(--amber);font-weight:700;letter-spacing:.01em;
+}
+.chip-a{left:-64px;top:22%}
+.chip-b{right:-30px;bottom:14%}
+@media (prefers-reduced-motion:no-preference){
+  .chip-a{animation:bob 5.2s ease-in-out infinite}
+  .chip-b{animation:bob 6.1s ease-in-out .8s infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  /* Hero 载入级联 */
+  .hero .stagger{opacity:0;transform:translateY(24px);animation:rise .9s var(--ease) forwards}
+  .hero .st-1{animation-delay:.05s}.hero .st-2{animation-delay:.15s}
+  .hero .st-3{animation-delay:.25s}.hero .st-4{animation-delay:.35s}
+  .hero-visual{opacity:0;transform:translateY(30px) scale(.97);animation:rise-v 1.1s var(--ease) .3s forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  @keyframes rise-v{to{opacity:1;transform:none}}
+}
+
+/* ============ 章节公共 ============ */
+.section{max-width:1280px;margin:0 auto;padding:clamp(72px,9vw,130px) clamp(20px,4vw,48px)}
+.section-head{max-width:640px;margin-bottom:clamp(40px,5vw,64px)}
+.section-head h2{
+  font-size:clamp(26px,3vw,38px);line-height:1.3;
+  letter-spacing:-.01em;font-weight:800;margin-bottom:16px;
+}
+.section-head p{color:var(--text-2)}
+
+/* ============ 故事：编辑部宣言式 ============ */
+.story{max-width:760px;margin:0 auto}
+.story .lede{
+  font-size:clamp(19px,2vw,24px);line-height:1.85;font-weight:500;
+}
+.story .lede em{color:var(--amber);font-style:normal;font-weight:700}
+.story p+p{margin-top:1.4em}
+.story .muted{color:var(--text-2)}
+.story-stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:clamp(20px,3vw,44px);
+  margin:clamp(44px,5vw,64px) 0;
+  padding:clamp(28px,3vw,40px) 0;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.stat-num{
+  font-family:var(--font-mono);font-weight:700;
+  font-size:clamp(26px,3.4vw,42px);letter-spacing:-.02em;line-height:1.15;
+}
+.stat-num sub{font-size:.45em;color:var(--text-3);font-weight:500;vertical-align:baseline}
+.stat-cap{font-size:13px;color:var(--text-3);margin-top:6px;line-height:1.5}
+
+/* 演示情景时间线 */
+.scenario{
+  margin-top:clamp(48px,6vw,72px);
+  border:1px solid var(--line-strong);border-radius:var(--r-panel);
+  background:linear-gradient(160deg,var(--bg-panel),var(--bg-raise));
+  padding:clamp(26px,3.4vw,44px);
+  position:relative;overflow:hidden;
+}
+.scenario::before{
+  content:"";position:absolute;right:-140px;top:-140px;width:380px;height:380px;
+  border-radius:50%;background:radial-gradient(circle,rgba(232,166,61,.10),transparent 65%);
+  pointer-events:none;
+}
+.scenario-tag{
+  display:inline-block;font-family:var(--font-mono);font-size:12px;
+  color:var(--amber);border:1px solid var(--amber-line);
+  border-radius:var(--r-chip);padding:4px 10px;margin-bottom:18px;
+  background:var(--amber-soft);
+}
+.scenario h3{font-size:clamp(19px,2vw,24px);font-weight:700;margin-bottom:8px}
+.scenario .intro{color:var(--text-2);font-size:15px;max-width:40em;margin-bottom:30px}
+.tl{position:relative;padding-left:26px}
+.tl::before{
+  content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;
+  background:var(--line-strong);border-radius:2px;
+}
+.tl .tl-progress{
+  position:absolute;left:6px;top:8px;width:2px;height:calc(100% - 16px);
+  background:linear-gradient(to bottom,var(--amber),rgba(232,166,61,.25));
+  border-radius:2px;transform-origin:top;transform:scaleY(0);
+  transition:transform 1.6s var(--ease) .2s;
+}
+.tl.in .tl-progress{transform:scaleY(1)}
+@media (prefers-reduced-motion:reduce){.tl .tl-progress{transform:scaleY(1);transition:none}}
+.tl-item{position:relative;padding-bottom:26px}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{
+  content:"";position:absolute;left:-25px;top:9px;width:8px;height:8px;
+  border-radius:50%;background:var(--bg);border:2px solid var(--amber);
+}
+.tl-time{
+  font-family:var(--font-mono);font-size:14px;font-weight:700;
+  color:var(--amber);letter-spacing:.02em;
+}
+.tl-time.deadline{
+  background:var(--amber);color:#14100a;
+  padding:1px 8px;border-radius:var(--r-chip);
+}
+.tl-body{font-size:14.5px;color:var(--text-2);margin-top:2px;max-width:46em}
+.tl-body b{color:var(--text);font-weight:600}
+
+/* ============ 计算链：左栏吸附 + 右列节点 ============ */
+.how{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(36px,6vw,96px)}
+.how-left{position:sticky;top:120px;align-self:start}
+.how-left h2{
+  font-size:clamp(26px,3vw,38px);line-height:1.3;font-weight:800;
+  letter-spacing:-.01em;margin-bottom:18px;
+}
+.how-left p{color:var(--text-2);max-width:30em}
+.how-left .kicker{
+  margin-top:26px;font-family:var(--font-mono);font-size:13px;color:var(--text-3);
+  line-height:2;
+}
+.how-left .kicker b{color:var(--amber);font-weight:600}
+.chain{display:flex;flex-direction:column}
+.chain-node{
+  display:grid;grid-template-columns:56px 1fr;gap:20px;
+  padding:26px 0;border-top:1px solid var(--line);
+}
+.chain-node:first-child{border-top:none;padding-top:0}
+.chain-ico{
+  width:52px;height:52px;border-radius:14px;flex:none;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg-panel);border:1px solid var(--line-strong);
+  transition:border-color .3s,background .3s;
+}
+.chain-node:hover .chain-ico{border-color:var(--amber-line);background:var(--amber-soft)}
+.chain-ico svg{width:24px;height:24px;stroke:var(--amber)}
+.chain-node h3{font-size:17px;font-weight:700;margin-bottom:4px}
+.chain-node h3 span{
+  font-family:var(--font-mono);font-size:12px;color:var(--text-3);
+  font-weight:500;margin-left:10px;letter-spacing:.03em;
+}
+.chain-node p{font-size:14.5px;color:var(--text-2);max-width:36em}
+
+/* ============ 功能 Bento ============ */
+.bento{
+  display:grid;gap:18px;
+  grid-template-columns:repeat(6,1fr);
+  grid-template-areas:
+    "flood flood flood card card card"
+    "access access reassign reassign reassign reassign"
+    "roadbook roadbook roadbook board board board";
+}
+.cell{
+  border:1px solid var(--line);border-radius:var(--r-panel);
+  background:var(--bg-raise);overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:border-color .35s,transform .35s var(--ease),box-shadow .35s;
+}
+.cell:hover{
+  border-color:var(--line-strong);
+  transform:translateY(-4px);
+  box-shadow:0 18px 48px rgba(0,0,0,.42);
+}
+.cell-flood{grid-area:flood}.cell-card{grid-area:card}
+.cell-access{grid-area:access}.cell-reassign{grid-area:reassign}
+.cell-roadbook{grid-area:roadbook}.cell-board{grid-area:board}
+.cell-txt{padding:24px 26px 20px}
+.cell-txt h3{font-size:17.5px;font-weight:700;margin-bottom:6px}
+.cell-txt p{font-size:14px;color:var(--text-2);max-width:40em}
+.cell-img{
+  margin:auto 18px 18px;border-radius:10px;overflow:hidden;
+  border:1px solid var(--line);position:relative;flex:none;
+}
+.cell-img img{
+  width:100%;height:100%;object-fit:cover;object-position:top left;
+  transition:transform .6s var(--ease);
+}
+.cell:hover .cell-img img{transform:scale(1.035)}
+.cell-flood .cell-img{height:280px}
+.cell-card .cell-img{height:280px}
+.cell-access .cell-img{height:240px}
+.cell-reassign .cell-img{height:240px}
+.cell-roadbook .cell-img{height:210px;background:#f4f6f8}
+.cell-roadbook .cell-img img{object-fit:contain;object-position:center}
+.cell-board .cell-img{height:210px}
+
+/* ============ 演示数据集数字 ============ */
+.numbers{
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+}
+.numbers-inner{
+  max-width:1280px;margin:0 auto;
+  padding:clamp(48px,6vw,72px) clamp(20px,4vw,48px);
+  display:grid;grid-template-columns:repeat(6,1fr);gap:24px;
+}
+.numbers-inner .lab{
+  grid-column:1/-1;font-size:13px;color:var(--text-3);
+  margin-bottom:2px;
+}
+.num{font-family:var(--font-mono)}
+.num b{
+  display:block;font-size:clamp(26px,3vw,40px);font-weight:700;
+  letter-spacing:-.02em;line-height:1.1;
+}
+.num span{font-size:13px;color:var(--text-3);font-family:var(--font-sans)}
+
+/* ============ 技术底座 ============ */
+.tech-rows{max-width:1000px}
+.tech-row{
+  display:grid;grid-template-columns:220px 1fr;gap:clamp(20px,4vw,64px);
+  padding:26px 0;border-top:1px solid var(--line);
+}
+.tech-row:last-child{border-bottom:1px solid var(--line)}
+.tech-row h3{font-size:16px;font-weight:700;color:var(--text)}
+.tech-row p{font-size:15px;color:var(--text-2);max-width:44em}
+.tech-row p b{color:var(--text);font-weight:600}
+
+/* ============ 尾部 CTA ============ */
+.final{
+  text-align:center;position:relative;overflow:hidden;
+  padding:clamp(90px,11vw,150px) clamp(20px,4vw,48px);
+}
+.final::before{
+  content:"";position:absolute;left:50%;bottom:-360px;width:820px;height:640px;
+  transform:translateX(-50%);border-radius:50%;
+  background:radial-gradient(ellipse,rgba(232,166,61,.13),transparent 62%);
+  pointer-events:none;
+}
+.final h2{
+  font-size:clamp(28px,4vw,50px);font-weight:800;
+  letter-spacing:-.015em;line-height:1.3;margin-bottom:18px;
+}
+.final p{color:var(--text-2);max-width:34em;margin:0 auto 40px}
+.final .hint{
+  margin-top:20px;font-family:var(--font-mono);font-size:13px;color:var(--text-3);
+}
+.final .hint code{color:var(--text-2)}
+
+/* ============ 页脚 ============ */
+.footer{
+  border-top:1px solid var(--line);
+  padding:32px clamp(20px,4vw,48px);
+  display:flex;flex-wrap:wrap;gap:12px 32px;align-items:center;
+  max-width:1280px;margin:0 auto;
+  font-size:13px;color:var(--text-3);
+}
+.footer .brand{display:flex;align-items:center;gap:8px;color:var(--text-2);font-weight:600}
+.footer .note{margin-left:auto;max-width:46em}
+
+/* ============ 响应式坍缩 ============ */
+@media (max-width:1024px){
+  .hero{grid-template-columns:1fr;padding-top:110px;text-align:left}
+  .hero-visual{justify-self:start;width:min(100%,400px)}
+  .chip-a{left:-8px}
+  .chip-b{right:-8px}
+  .how{grid-template-columns:1fr}
+  .how-left{position:static}
+  .bento{
+    grid-template-columns:1fr 1fr;
+    grid-template-areas:
+      "flood flood" "card card" "access reassign" "roadbook board";
+  }
+  .numbers-inner{grid-template-columns:repeat(3,1fr)}
+}
+/* ============ 30 秒速览条 ============ */
+.glance{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+.glance-inner{
+  border:1px solid var(--line);border-radius:var(--r-panel);
+  background:linear-gradient(120deg,var(--bg-raise),var(--bg-panel));
+  padding:clamp(16px,2vw,22px) clamp(20px,3vw,34px);
+  display:flex;flex-wrap:wrap;align-items:center;gap:14px clamp(16px,2.4vw,28px);
+}
+.glance-lab{
+  font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;
+  color:var(--amber);text-transform:uppercase;
+  padding-right:clamp(12px,2vw,22px);border-right:1px solid var(--line-strong);
+}
+.glance-step{display:flex;align-items:center;gap:12px}
+.glance-num{
+  width:26px;height:26px;flex:none;border-radius:50%;
+  border:1px solid var(--amber-line);color:var(--amber);
+  font-family:var(--font-mono);font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+.glance-step b{font-weight:600;font-size:14.5px}
+.glance-step>span:last-child{color:var(--text-3);font-size:13px}
+.glance-arrow{color:var(--text-3);flex:none}
+@media(max-width:900px){
+  .glance-arrow{display:none}
+  .glance-inner{flex-direction:column;align-items:flex-start;gap:14px}
+  .glance-lab{border-right:none;border-bottom:1px solid var(--line-strong);padding:0 0 12px;width:100%}
+}
+
+/* ============ 对比：从一张图到一张时间表 ============ */
+.compare{display:grid;grid-template-columns:1fr auto 1fr;gap:clamp(18px,3vw,36px);align-items:stretch}
+.cmp-card{
+  border:1px solid var(--line);border-radius:var(--r-panel);
+  background:var(--bg-raise);overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.cmp-card.is-ours{border-color:var(--amber-line);box-shadow:0 0 0 1px var(--amber-soft),0 18px 48px rgba(0,0,0,.34)}
+.cmp-tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.06em;padding:16px 20px 0}
+.cmp-card.is-plain .cmp-tag{color:var(--text-3)}
+.cmp-card.is-ours .cmp-tag{color:var(--amber)}
+.cmp-card h3{font-size:19px;font-weight:700;padding:6px 20px 2px}
+.cmp-card>p{font-size:13.5px;color:var(--text-2);padding:0 20px 16px;max-width:34em}
+.cmp-img{margin:auto 16px 16px;border-radius:10px;overflow:hidden;border:1px solid var(--line);height:230px}
+.cmp-img img{width:100%;height:100%;object-fit:cover;object-position:top left}
+.cmp-vs{align-self:center;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--text-3)}
+.cmp-vs .vs-badge{
+  width:44px;height:44px;border-radius:50%;border:1px solid var(--line-strong);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-2);font-weight:700;font-family:var(--font-mono);font-size:13px;
+}
+@media(max-width:860px){
+  .compare{grid-template-columns:1fr}
+  .cmp-vs{flex-direction:row}
+  .cmp-vs svg{transform:rotate(90deg)}
+}
+
+/* ============ 计算链数据流动画 ============ */
+.chain{position:relative}
+.chain::before{content:"";position:absolute;left:25px;top:26px;bottom:26px;width:2px;background:var(--line);border-radius:2px}
+.chain-fill{
+  position:absolute;left:25px;top:26px;width:2px;height:calc(100% - 52px);
+  background:linear-gradient(to bottom,var(--amber),rgba(232,166,61,.2));
+  border-radius:2px;transform-origin:top;transform:scaleY(0);
+  transition:transform 2s var(--ease) .1s;
+}
+.chain.flow .chain-fill{transform:scaleY(1)}
+.chain-node{position:relative}
+.chain.flow .chain-node .chain-ico{animation:icoPulse .9s var(--ease) both}
+.chain.flow .chain-node:nth-child(2) .chain-ico{animation-delay:.15s}
+.chain.flow .chain-node:nth-child(3) .chain-ico{animation-delay:.55s}
+.chain.flow .chain-node:nth-child(4) .chain-ico{animation-delay:.95s}
+.chain.flow .chain-node:nth-child(5) .chain-ico{animation-delay:1.35s}
+.chain.flow .chain-node:nth-child(6) .chain-ico{animation-delay:1.75s}
+@keyframes icoPulse{
+  0%{border-color:var(--line-strong);background:var(--bg-panel)}
+  40%{border-color:var(--amber);background:var(--amber-soft);box-shadow:0 0 0 6px var(--amber-soft),0 0 22px rgba(232,166,61,.4);transform:scale(1.06)}
+  100%{border-color:var(--line-strong);background:var(--bg-panel);transform:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .chain-fill{transform:scaleY(1);transition:none}
+  .chain.flow .chain-node .chain-ico{animation:none}
+}
+
+/* ============ 现场扫码体验 ============ */
+.tryit{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+.tryit-inner{
+  border:1px solid var(--line-strong);border-radius:var(--r-panel);
+  background:linear-gradient(150deg,var(--bg-panel),var(--bg-raise));
+  padding:clamp(28px,4vw,50px);
+  display:grid;grid-template-columns:1fr auto;gap:clamp(28px,5vw,60px);
+  align-items:center;position:relative;overflow:hidden;
+}
+.tryit-inner::before{content:"";position:absolute;right:-120px;top:-120px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(232,166,61,.10),transparent 65%);pointer-events:none}
+.tryit-txt h2{font-size:clamp(22px,2.6vw,32px);font-weight:800;letter-spacing:-.01em;line-height:1.3;margin-bottom:14px}
+.tryit-txt>p{color:var(--text-2);max-width:32em;margin-bottom:22px}
+.tryit-steps{display:flex;flex-direction:column;gap:10px}
+.tryit-steps li{list-style:none;display:flex;gap:12px;align-items:baseline;font-size:14px;color:var(--text-2)}
+.tryit-steps b{font-family:var(--font-mono);color:var(--amber);flex:none}
+.qr-card{background:#fff;border-radius:14px;padding:16px;flex:none;box-shadow:0 18px 50px rgba(0,0,0,.5);text-align:center}
+.qr-card img{width:180px;height:180px}
+.qr-card figcaption{margin-top:8px;font-size:12px;color:#5b6470;font-family:var(--font-mono)}
+@media(max-width:760px){
+  .tryit-inner{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .tryit-steps li{justify-content:center}
+}
+
+/* ============ noanim：动画终态直出（验证/回归用） ============ */
+html.noanim{scroll-behavior:auto}
+html.noanim .hero{min-height:940px}
+html.noanim .rv{opacity:1;transform:none;transition:none}
+html.noanim .hero .stagger{animation:none;opacity:1;transform:none}
+html.noanim .hero-visual{animation:none;opacity:1;transform:none}
+html.noanim .float-chip{animation:none}
+html.noanim .tl .tl-progress{transform:scaleY(1);transition:none}
+html.noanim .chain-fill{transform:scaleY(1);transition:none}
+html.noanim .chain .chain-node .chain-ico{animation:none}
+
+@media (max-width:767px){
+  .nav-links{display:none}
+  .hero{padding-left:20px;padding-right:20px}
+  .story-stats{grid-template-columns:1fr;gap:24px}
+  .bento{grid-template-columns:1fr;grid-template-areas:"flood" "card" "access" "reassign" "roadbook" "board"}
+  .numbers-inner{grid-template-columns:repeat(2,1fr)}
+  .tech-row{grid-template-columns:1fr;gap:6px}
+  .float-chip{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= 导航 ================= -->
+<nav class="nav" id="nav">
+  <a class="nav-brand" href="#top" aria-label="灾前疏散调度大脑">
+    <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="8" fill="#131a23"/>
+      <path d="M6 21c3-2 5-2 8 0s5 2 8 0" stroke="#e8a63d" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M16 15V7m0 0l-4 4m4-4l4 4" stroke="#e8edf2" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    灾前疏散调度大脑
+  </a>
+  <div class="nav-links">
+    <a href="#story">为什么</a>
+    <a href="#how">怎么算</a>
+    <a href="#features">作战板</a>
+    <a href="#tech">技术底座</a>
+  </div>
+  <a class="btn btn-amber js-demo" href="http://localhost:5200" target="_blank" rel="noopener">进入作战板</a>
+</nav>
+
+<!-- ================= Hero ================= -->
+<header class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div>
+    <span class="eyebrow stagger st-1">面向社区帮扶者与网格员</span>
+    <h1 class="stagger st-2">洪水到来之前，<br />每个人的<span class="accent">出发时刻</span>都已算好</h1>
+    <p class="hero-sub stagger st-3">在预警窗口期内推演水情，为弱势住户倒推最迟出发时间，把帮扶任务派给对的人，并追踪到场与补位。</p>
+    <div class="hero-ctas stagger st-4">
+      <a class="btn btn-amber btn-lg js-demo" href="http://localhost:5200" target="_blank" rel="noopener">进入作战板</a>
+      <a class="btn btn-ghost btn-lg" href="#how">看它怎么算</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-shot">
+      <div class="float-chip chip-a">
+        <strong>02:55</strong>
+        滨江路 88 号<br />最迟出发时刻
+      </div>
+      <div class="float-chip chip-b">
+        <strong>+2 人</strong>
+        备份帮扶者<br />失联自动补位
+      </div>
+      <div class="shot-frame">
+        <div class="bar" aria-hidden="true"><i></i><i></i><i></i><span>调度作战板 / 阳朔县城</span></div>
+        <img src="assets/shot-route.png" width="441" height="658"
+             alt="调度作战板地图：帮扶者沿无障碍路线接到卢阿姨，绕开台阶障碍，护送至阳朔公园应急避难点" />
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= 30 秒速览条 ================= -->
+<div class="glance">
+  <div class="glance-inner rv">
+    <span class="glance-lab">30 秒看懂</span>
+    <div class="glance-step"><span class="glance-num">1</span><b>推演水情</b><span>逐时水深与流速</span></div>
+    <svg class="glance-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    <div class="glance-step"><span class="glance-num">2</span><b>倒推时刻</b><span>每户最迟出发时间</span></div>
+    <svg class="glance-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    <div class="glance-step"><span class="glance-num">3</span><b>派单到人</b><span>匹配帮扶与补位</span></div>
+  </div>
+</div>
+
+<!-- ================= 故事 ================= -->
+<section class="section" id="story">
+  <div class="story">
+    <p class="lede rv">东日本大地震中，残障者的死亡率约为总人口的<em> 2 倍</em>。事后调查发现，最大的死因不是无路可走，而是<em>决定不走</em>：觉得水不会真的来，或者，不想拖累任何人。</p>
+    <div class="story-stats">
+      <div class="rv"><div class="stat-num">2<sub>倍</sub></div><div class="stat-cap">东日本大地震残障者死亡率，相对总人口</div></div>
+      <div class="rv rv-d1"><div class="stat-num">11400<sub>m³/s</sub></div><div class="stat-cap">2025 年 6 月榕江都柳江洪峰流量，特大洪水等级</div></div>
+      <div class="rv rv-d2"><div class="stat-num">5万+<sub>人</sub></div><div class="stat-cap">榕江洪灾紧急转移人数，一周内两次洪峰</div></div>
+    </div>
+    <p class="muted rv">劝一个犹豫的人，一句「请提前撤离」没有用；一个具体的时刻才有用。这套系统在预警窗口期内算出每户的<b style="color:var(--text)">最迟出发时间</b>，再把出发的决定交给帮扶者：不是「张奶奶该走了」，而是「你必须在 14:20 前赶到张奶奶家」。</p>
+    <div class="scenario rv">
+      <span class="scenario-tag">演示情景：2024-06 漓江洪水（系统实算数据）</span>
+      <h3>滨江路 88 号，陈先生，视障</h3>
+      <p class="intro">阳朔站水位起涨当晚，作战板推演出滨江路一带将被内涝先淹。以下每个时刻都由水深场与真实路网倒推得出。</p>
+      <div class="tl" data-tl>
+        <span class="tl-progress" aria-hidden="true"></span>
+        <div class="tl-item">
+          <span class="tl-time">00:00</span>
+          <p class="tl-body">阳朔站起涨，预警窗口开启。系统载入 24 户在册名单，完成帮扶匹配。</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-time">02:49</span>
+          <p class="tl-body">帮扶者<b>李网格</b>抵达陈先生家门口。接人段 440 米，约 6 分钟，沿途优先盲道与声控信号灯。</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-time deadline">02:55</span>
+          <p class="tl-body"><b>最迟出发时刻。</b>由下游路段的失效时间逐段倒推：路淹之前，必须通过。</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-time">03:02</span>
+          <p class="tl-body">护送 351 米，抵达山水园临江避难点。名单状态更新为「已安置」。</p>
+        </div>
+        <div class="tl-item">
+          <span class="tl-time">18:00</span>
+          <p class="tl-body">洪水持续上涨，临江避难点失效。系统<b>自动改派</b>至阳朔公园应急避难点，备援路线早已算好。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 计算链 ================= -->
+<section class="section" id="how">
+  <div class="how">
+    <div class="how-left rv">
+      <span class="eyebrow">从地形到派单的计算链</span>
+      <h2 style="margin-top:22px">五步，把一场洪水变成一张时间表</h2>
+      <p>调度的每个数字都可以指着屏幕解释：哪段路、几点失效、扣了多少护送耗时。黑箱变白箱，是说服一个犹豫者的前提。</p>
+      <p class="kicker">DEM 地形 + OSM 路网<br />→ 逐时水深与流速场<br />→ 路段失效时刻<br />→ <b>最迟出发时间</b><br />→ 帮扶匹配与补位</p>
+    </div>
+    <div class="chain">
+      <span class="chain-fill" aria-hidden="true"></span>
+      <div class="chain-node rv">
+        <div class="chain-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l6-3 6 3 6-3V4l-6 3-6-3-6 3z"/><path d="M9 4v13M15 7v13"/></svg></div>
+        <div>
+          <h3>融合地形与路网<span>Copernicus DEM + OSM</span></h3>
+          <p>30 米分辨率地形叠加真实建筑与道路，建筑抬高、路面下凹，还原水流真正会走的路。</p>
+        </div>
+      </div>
+      <div class="chain-node rv">
+        <div class="chain-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2.5-2 4.5-2 7 0s4.5 2 7 0 4.5-2 6 0"/><path d="M2 17c2.5-2 4.5-2 7 0s4.5 2 7 0 4.5-2 6 0"/><path d="M2 7c2.5-2 4.5-2 7 0s4.5 2 7 0 4.5-2 6 0"/></svg></div>
+        <div>
+          <h3>推演水情<span>浅水方程 24h 逐时</span></h3>
+          <p>河道漫溢与内涝积水双机制推演，输出每小时的水深与流速场，而不是一张静态淹没图。</p>
+        </div>
+      </div>
+      <div class="chain-node rv">
+        <div class="chain-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19L19 4M6 4h4v4M18 20h-4v-4"/><circle cx="12" cy="12" r="9" opacity=".35"/></svg></div>
+        <div>
+          <h3>标记路段失效时刻<span>画像化阈值 + v×d 判据</span></h3>
+          <p>轮椅 0.15 米水深即失效，行人按「水深乘流速」失稳判据。每段路都有自己的截止时间。</p>
+        </div>
+      </div>
+      <div class="chain-node rv">
+        <div class="chain-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2.5"/><path d="M12 3V1M21 12h2"/></svg></div>
+        <div>
+          <h3>倒推最迟出发时间<span>逐段反向递推</span></h3>
+          <p>从避难所沿路线倒着算：段失效时刻减去行进耗时，收敛出每户不能再晚的那个时刻。</p>
+        </div>
+      </div>
+      <div class="chain-node rv">
+        <div class="chain-ico"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="7" r="3"/><circle cx="18" cy="7" r="3"/><path d="M2 21v-1a4 4 0 014-4h0a4 4 0 014 4v1M14 21v-1a4 4 0 014-4h0a4 4 0 014 4v1"/></svg></div>
+        <div>
+          <h3>匹配帮扶与补位<span>带时间窗的调度求解</span></h3>
+          <p>按紧迫度指派帮扶者，支持一人串行接多户；每户配备份帮扶，主帮扶失联自动升级补位。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 对比：从一张图到一张时间表 ================= -->
+<section class="section" id="compare">
+  <div class="section-head rv">
+    <h2>别人给你一张图，<br />我们给你一张时间表</h2>
+    <p>同一场水动力推演，多数工具止步于「哪里会淹」。这套系统把它继续算到「谁、几点、走哪条路」。</p>
+  </div>
+  <div class="compare">
+    <figure class="cmp-card is-plain rv">
+      <div class="cmp-tag">常见做法</div>
+      <h3>只有一张淹没图</h3>
+      <p>知道哪片区域会进水，却不知道谁来不及、谁该先走、走哪条路。最后的决定，还是留给了那个犹豫的人。</p>
+      <div class="cmp-img"><img src="assets/shot-flood.png" alt="仅有淹没范围的洪水地图，蓝色水深分级覆盖老城区" loading="lazy" /></div>
+    </figure>
+    <div class="cmp-vs" aria-hidden="true">
+      <span class="vs-badge">VS</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </div>
+    <figure class="cmp-card is-ours rv rv-d1">
+      <div class="cmp-tag">本系统</div>
+      <h3>一份到人的时间表</h3>
+      <p>同一场推演落到每一户：最迟出发时刻、无障碍路线、由谁护送、失联如何补位。把犹豫，变成一个能执行的动作。</p>
+      <div class="cmp-img"><img src="assets/shot-board.png" alt="调度作战板：待撤离名单按剩余时间排序，右侧地图展示路线与避难所" loading="lazy" /></div>
+    </figure>
+  </div>
+</section>
+
+<!-- ================= 功能 Bento ================= -->
+<section class="section" id="features">
+  <div class="section-head rv">
+    <span class="eyebrow">调度作战板</span>
+    <h2 style="margin-top:22px">一块屏幕，盯住整个县城的撤离</h2>
+    <p>以下截图全部来自系统实机运行，阳朔县城真实路网与真实地物选点。</p>
+  </div>
+  <div class="bento">
+    <div class="cell cell-flood rv">
+      <div class="cell-txt">
+        <h3>水动力淹没推演</h3>
+        <p>25 帧逐时水深着色，路段绿黄红三态随时间轴联动，可拖动、可播放、可切换三套洪水情景。</p>
+      </div>
+      <div class="cell-img"><img src="assets/shot-flood.png" alt="淹没推演地图：蓝色水深分级图层覆盖老城区，道路按畅通、即将失效、已失效三态着色" loading="lazy" /></div>
+    </div>
+    <div class="cell cell-card rv rv-d1">
+      <div class="cell-txt">
+        <h3>可解释的倒计时</h3>
+        <p>点击任意住户展开倒推链：哪段路几点失效、扣了多少护送耗时，黑箱变白箱。</p>
+      </div>
+      <div class="cell-img"><img src="assets/shot-card.png" alt="住户路径卡：张奶奶轮椅画像，串行任务第 2 单，展示接人段与护送段耗时与告警" loading="lazy" /></div>
+    </div>
+    <div class="cell cell-access rv">
+      <div class="cell-txt">
+        <h3>无障碍路径对比</h3>
+        <p>街景 AI 识别台阶与陡坎，注入路网后轮椅路线自动绕行，与普通步行路线同屏对比。</p>
+      </div>
+      <div class="cell-img"><img src="assets/shot-access.png" alt="轮椅与步行路径对比面板：三位住户的绕行倍率 1.07 至 1.19" loading="lazy" /></div>
+    </div>
+    <div class="cell cell-reassign rv rv-d1">
+      <div class="cell-txt">
+        <h3>避难所失效自动改派</h3>
+        <p>场地被淹或急流超限时自动改派次近可达避难所，已入住人员触发整所转移预案。</p>
+      </div>
+      <div class="cell-img"><img src="assets/shot-reassign.png" alt="作战板：原避难所被淹后系统自动改派至阳朔公园应急避难点，左侧为救助优先级清单" loading="lazy" /></div>
+    </div>
+    <div class="cell cell-roadbook rv">
+      <div class="cell-txt">
+        <h3>AI 语音路书</h3>
+        <p>为视障住户生成口语化路书与水情提醒，优先盲道与声控信号灯，可 TTS 播报。</p>
+      </div>
+      <div class="cell-img"><img src="assets/shot-roadbook.png" alt="陈先生的视障引导路线卡：接人段 440 米 6 分钟，护送段 351 米 7 分钟，附路径失效告警" loading="lazy" /></div>
+    </div>
+    <div class="cell cell-board rv rv-d1">
+      <div class="cell-txt">
+        <h3>分级响应与救助优先级</h3>
+        <p>预备、待命、出动三档响应防误报消耗；无路可走名单自动分级，一键导出救助清单。</p>
+      </div>
+      <div class="cell-img"><img src="assets/shot-board.png" alt="作战板全景：左侧待撤离名单与无路可走清单，右侧地图展示避难所容量弹窗" loading="lazy" /></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 演示数据集 ================= -->
+<div class="numbers">
+  <div class="numbers-inner">
+    <div class="lab rv">当前演示数据集，广西阳朔县城，全部坐标取自 OSM 真实地物</div>
+    <div class="num rv"><b data-count="24">0</b><span>户在册建档</span></div>
+    <div class="num rv rv-d1"><b data-count="10">0</b><span>名社区帮扶者</span></div>
+    <div class="num rv rv-d2"><b data-count="5">0</b><span>处分级避难所</span></div>
+    <div class="num rv"><b data-count="3">0</b><span>套洪水情景</span></div>
+    <div class="num rv rv-d1"><b data-count="25">0</b><span>帧水情推演</span></div>
+    <div class="num rv rv-d2"><b data-count="66">0</b><span>条实算路线</span></div>
+  </div>
+</div>
+
+<!-- ================= 技术底座 ================= -->
+<section class="section" id="tech">
+  <div class="section-head rv">
+    <h2>每一层都能被替换，<br />每一句都经得起追问</h2>
+    <p>不夸大一毫米。以下是它真实的样子。</p>
+  </div>
+  <div class="tech-rows">
+    <div class="tech-row rv">
+      <h3>路径引擎</h3>
+      <p><b>Valhalla</b> 真实路网实算，轮椅、视障、老人三种画像各有约束：轮椅硬性排除台阶，视障路线重罚复杂路口。演示路径预计算缓存，断网可用。</p>
+    </div>
+    <div class="tech-row rv">
+      <h3>水动力内核</h3>
+      <p><b>landlab OverlandFlow</b> 惯性简化浅水方程（Bates 2010），DEM 经建筑抬高与道路下凹条件化。架构可插拔 HEC-RAS 工程级内核。</p>
+    </div>
+    <div class="tech-row rv">
+      <h3>AI 协作层</h3>
+      <p><b>LLM</b> 生成帮扶者派单简报与视障语音路书，多模态模型识别街景通行障碍并注入路网。模型不可用时规则模板兜底，演示永不空白。</p>
+    </div>
+    <div class="tech-row rv">
+      <h3>产品边界</h3>
+      <p>只覆盖有预警窗口的灾种（洪水、台风、降雨型滑坡），不做地震。定位是<b>协助优先排序</b>，不承诺救援结果；工具不能创造善意，只能让既有的人力覆盖到最需要的人。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 现场扫码体验 ================= -->
+<div class="tryit">
+  <div class="tryit-inner rv">
+    <div class="tryit-txt">
+      <h2>扫码，在你的手机上打开作战板</h2>
+      <p>无需安装，扫码即在浏览器打开完整演示。数据本地兜底，断网也能拖动时间轴、展开每户的倒推链。</p>
+      <ul class="tryit-steps">
+        <li><b>01</b><span>用手机相机或微信扫一扫</span></li>
+        <li><b>02</b><span>浏览器直接打开调度作战板</span></li>
+        <li><b>03</b><span>拖动时间轴，看 24 小时洪水与每户倒计时</span></li>
+      </ul>
+    </div>
+    <figure class="qr-card">
+      <img src="assets/qr-demo.png" alt="扫码打开在线演示的二维码" width="180" height="180" />
+      <figcaption>扫码打开在线演示</figcaption>
+    </figure>
+  </div>
+</div>
+
+<!-- ================= 尾部 CTA ================= -->
+<section class="final">
+  <h2 class="rv">预警窗口期，<br />让善意先出发</h2>
+  <p class="rv rv-d1">打开作战板，拖动时间轴，看一场 24 小时的洪水如何被拆解成一份人人可执行的时间表。</p>
+  <a class="btn btn-amber btn-lg rv rv-d2 js-demo" href="http://localhost:5200" target="_blank" rel="noopener">进入作战板</a>
+  <div class="hint rv rv-d3">在线演示 <code class="js-demo-url">http://localhost:5200</code>，数据本地兜底，断网也能演示</div>
+</section>
+
+<!-- ================= 页脚 ================= -->
+<footer class="footer">
+  <span class="brand">
+    <svg width="18" height="18" viewBox="0 0 32 32" aria-hidden="true">
+      <rect width="32" height="32" rx="8" fill="#131a23"/>
+      <path d="M6 21c3-2 5-2 8 0s5 2 8 0" stroke="#e8a63d" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M16 15V7m0 0l-4 4m4-4l4 4" stroke="#e8edf2" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    灾前疏散调度大脑
+  </span>
+  <span class="note">演示场景基于广西阳朔真实路网与 2024-06 漓江洪水情景构建；页面中出现的住户与帮扶者均为虚拟演示角色。</span>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    || document.documentElement.classList.contains("noanim");
+
+  /* 导航滚动态：用哨兵 + IntersectionObserver，不挂 scroll 监听 */
+  var nav = document.getElementById("nav");
+  var sentinel = document.createElement("div");
+  sentinel.style.cssText = "position:absolute;top:72px;height:1px;width:1px;pointer-events:none;";
+  document.body.prepend(sentinel);
+  new IntersectionObserver(function (entries) {
+    nav.classList.toggle("scrolled", !entries[0].isIntersecting);
+  }).observe(sentinel);
+
+  /* 滚动显现 */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        e.target.classList.add("in");
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.18, rootMargin: "0px 0px -6% 0px" });
+  document.querySelectorAll(".rv, [data-tl]").forEach(function (el) { io.observe(el); });
+
+  /* 数字滚动（演示数据集） */
+  function countUp(el) {
+    var target = parseInt(el.getAttribute("data-count"), 10);
+    if (reduced) { el.textContent = target; return; }
+    var t0 = null, dur = 1200;
+    function tick(ts) {
+      if (!t0) t0 = ts;
+      var p = Math.min((ts - t0) / dur, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased);
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  var ioNum = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        countUp(e.target);
+        ioNum.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.6 });
+  document.querySelectorAll("[data-count]").forEach(function (el) { ioNum.observe(el); });
+
+  /* Demo 地址集中管理：部署后只改 DEMO_URL 这一处（并重跑 scripts/gen_qr.py 生成二维码） */
+  var DEMO_URL = "http://localhost:5200";
+  document.querySelectorAll(".js-demo").forEach(function (a) { a.href = DEMO_URL; });
+  var durl = document.querySelector(".js-demo-url");
+  if (durl) durl.textContent = DEMO_URL;
+
+  /* 计算链数据流：进入视口后高亮点依次流过五步管线 */
+  var chain = document.querySelector(".chain");
+  if (chain) {
+    if (reduced) {
+      chain.classList.add("flow");
+    } else {
+      new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { chain.classList.add("flow"); obs.disconnect(); }
+        });
+      }, { threshold: 0.3 }).observe(chain);
+    }
+  }
+})();
+</script>
+</body>
+</html>

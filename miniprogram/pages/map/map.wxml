@@ -1,0 +1,52 @@
+<view class="page">
+  <map
+    id="map"
+    class="map"
+    longitude="{{longitude}}"
+    latitude="{{latitude}}"
+    scale="{{scale}}"
+    markers="{{markers}}"
+    polyline="{{polylines}}"
+    polygons="{{polygons}}"
+    bindmarkertap="onMarkerTap"
+    enable-satellite="{{satellite}}"
+    show-compass
+  />
+
+  <!-- 左侧：底图切换（街道 / 卫星影像） -->
+  <view class="satellite-btn {{satellite ? 'on' : ''}}" bindtap="toggleSatellite">
+    {{satellite ? '🛰️ 卫星' : '🗺️ 街道'}}
+  </view>
+
+  <!-- 顶部：分级响应徽标 + 当前推演时刻 -->
+  <view class="overlay top">
+    <view class="alert-badge {{alert.cls}}">响应级别 · {{alert.label}}</view>
+    <view class="frame-info">
+      <text>⏱ {{minuteLabel}}</text>
+      <text class="water">阳朔站 {{waterLabel}} m{{warnLabel ? '（' + warnLabel + '）' : ''}}</text>
+    </view>
+  </view>
+
+  <!-- 底部：淹没推演时间轴 + 图例 -->
+  <view class="overlay bottom">
+    <view class="timeline-title">淹没推演时间轴</view>
+    <slider
+      min="0"
+      max="{{frameMax}}"
+      step="1"
+      value="{{frameIndex}}"
+      block-size="20"
+      activeColor="#0284c7"
+      backgroundColor="#cbd5e1"
+      bindchanging="onSliderChange"
+      bindchange="onSliderChange"
+    />
+    <view class="legend">
+      <view class="legend-item"><view class="dot dot-evacuee" />待撤离</view>
+      <view class="legend-item"><view class="dot dot-alert" />未匹配</view>
+      <view class="legend-item"><view class="dot dot-helper" />帮扶者</view>
+      <view class="legend-item"><view class="dot dot-shelter" />避难所</view>
+      <view class="legend-item"><view class="dot dot-flood" />淹没区</view>
+    </view>
+  </view>
+</view>

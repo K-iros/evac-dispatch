@@ -1,0 +1,585 @@
+{
+  "shelters_candidates": [
+    {
+      "name": "富康医院",
+      "kind": "hospital",
+      "lng": 110.4788227,
+      "lat": 24.7755786,
+      "wheelchair": null
+    },
+    {
+      "name": "阳朔县妇幼保健院",
+      "kind": "hospital",
+      "lng": 110.4802938,
+      "lat": 24.7767296,
+      "wheelchair": null
+    },
+    {
+      "name": "欧美达英文书院",
+      "kind": "college",
+      "lng": 110.4763445,
+      "lat": 24.7733866,
+      "wheelchair": null
+    },
+    {
+      "name": "金水岸岩壁",
+      "kind": "sports_centre",
+      "lng": 110.4637266,
+      "lat": 24.7502784,
+      "wheelchair": null
+    },
+    {
+      "name": "阳朔公园",
+      "kind": "park",
+      "lng": 110.4845496,
+      "lat": 24.779033,
+      "wheelchair": null
+    },
+    {
+      "name": "阳朔县人民医院",
+      "kind": "hospital",
+      "lng": 110.4874681,
+      "lat": 24.7817395,
+      "wheelchair": null
+    },
+    {
+      "name": "阳朔县外语实验中学",
+      "kind": "school",
+      "lng": 110.4894226,
+      "lat": 24.7917951,
+      "wheelchair": null
+    },
+    {
+      "name": "阳朔县实验小学",
+      "kind": "school",
+      "lng": 110.4767262,
+      "lat": 24.7751975,
+      "wheelchair": null
+    },
+    {
+      "name": "阳朔中学",
+      "kind": "school",
+      "lng": 110.4926195,
+      "lat": 24.7709394,
+      "wheelchair": null
+    },
+    {
+      "name": "文化古迹山水园",
+      "kind": "park",
+      "lng": 110.4930179,
+      "lat": 24.7781759,
+      "wheelchair": null
+    },
+    {
+      "name": "阳朔镇第二中学",
+      "kind": "school",
+      "lng": 110.5212351,
+      "lat": 24.7474741,
+      "wheelchair": null
+    },
+    {
+      "name": "阳朔镇实验幼儿园",
+      "kind": "school",
+      "lng": 110.5210543,
+      "lat": 24.7489433,
+      "wheelchair": null
+    },
+    {
+      "name": "阳朔镇第二小学",
+      "kind": "school",
+      "lng": 110.5096453,
+      "lat": 24.7622396,
+      "wheelchair": null
+    },
+    {
+      "name": "阳朔镇第二幼儿园",
+      "kind": "school",
+      "lng": 110.5107211,
+      "lat": 24.7624735,
+      "wheelchair": null
+    },
+    {
+      "name": "阳朔县人民政府",
+      "kind": "townhall",
+      "lng": 110.4919659,
+      "lat": 24.7817771,
+      "wheelchair": null
+    }
+  ],
+  "named_streets": [
+    {
+      "name": "东岭街",
+      "highway": "residential",
+      "lng": 110.49941,
+      "lat": 24.779775
+    },
+    {
+      "name": "兰溪路",
+      "highway": "tertiary",
+      "lng": 110.506447,
+      "lat": 24.759056
+    },
+    {
+      "name": "兰溪路",
+      "highway": "tertiary",
+      "lng": 110.504039,
+      "lat": 24.757502
+    },
+    {
+      "name": "兰花路",
+      "highway": "residential",
+      "lng": 110.476984,
+      "lat": 24.776701
+    },
+    {
+      "name": "兰花路",
+      "highway": "residential",
+      "lng": 110.478246,
+      "lat": 24.774318
+    },
+    {
+      "name": "千古情大道",
+      "highway": "tertiary",
+      "lng": 110.471205,
+      "lat": 24.777042
+    },
+    {
+      "name": "千古情大道",
+      "highway": "tertiary",
+      "lng": 110.465412,
+      "lat": 24.77308
+    },
+    {
+      "name": "千古情大道",
+      "highway": "tertiary",
+      "lng": 110.465492,
+      "lat": 24.771894
+    },
+    {
+      "name": "千古情大道",
+      "highway": "tertiary",
+      "lng": 110.46548,
+      "lat": 24.772062
+    },
+    {
+      "name": "千古情大道",
+      "highway": "tertiary",
+      "lng": 110.467332,
+      "lat": 24.775618
+    },
+    {
+      "name": "千古情大道",
+      "highway": "tertiary",
+      "lng": 110.471986,
+      "lat": 24.77874
+    },
+    {
+      "name": "千古情大道",
+      "highway": "tertiary",
+      "lng": 110.473334,
+      "lat": 24.781205
+    },
+    {
+      "name": "千古情大道",
+      "highway": "tertiary",
+      "lng": 110.473381,
+      "lat": 24.78143
+    },
+    {
+      "name": "县前街",
+      "highway": "pedestrian",
+      "lng": 110.491803,
+      "lat": 24.779502
+    },
+    {
+      "name": "县前街",
+      "highway": "pedestrian",
+      "lng": 110.491891,
+      "lat": 24.77996
+    },
+    {
+      "name": "县前街",
+      "highway": "pedestrian",
+      "lng": 110.491904,
+      "lat": 24.780161
+    },
+    {
+      "name": "叠翠路",
+      "highway": "tertiary",
+      "lng": 110.489535,
+      "lat": 24.779767
+    },
+    {
+      "name": "叠翠路",
+      "highway": "tertiary",
+      "lng": 110.48684,
+      "lat": 24.777516
+    },
+    {
+      "name": "叠翠路",
+      "highway": "tertiary",
+      "lng": 110.490438,
+      "lat": 24.780215
+    },
+    {
+      "name": "叠翠路",
+      "highway": "tertiary",
+      "lng": 110.488017,
+      "lat": 24.778564
+    },
+    {
+      "name": "叠翠路",
+      "highway": "tertiary",
+      "lng": 110.488382,
+      "lat": 24.778877
+    },
+    {
+      "name": "响水路",
+      "highway": "tertiary",
+      "lng": 110.477289,
+      "lat": 24.772589
+    },
+    {
+      "name": "城中路",
+      "highway": "pedestrian",
+      "lng": 110.489679,
+      "lat": 24.777431
+    },
+    {
+      "name": "城中路",
+      "highway": "tertiary",
+      "lng": 110.488068,
+      "lat": 24.781653
+    },
+    {
+      "name": "城中路",
+      "highway": "pedestrian",
+      "lng": 110.489226,
+      "lat": 24.77921
+    },
+    {
+      "name": "城中路",
+      "highway": "tertiary",
+      "lng": 110.48864,
+      "lat": 24.780271
+    },
+    {
+      "name": "城中路",
+      "highway": "tertiary",
+      "lng": 110.488609,
+      "lat": 24.780318
+    },
+    {
+      "name": "城北路",
+      "highway": "residential",
+      "lng": 110.491029,
+      "lat": 24.782979
+    },
+    {
+      "name": "宝泉巷",
+      "highway": "residential",
+      "lng": 110.485144,
+      "lat": 24.781309
+    },
+    {
+      "name": "宝泉巷",
+      "highway": "residential",
+      "lng": 110.48169,
+      "lat": 24.778938
+    },
+    {
+      "name": "宝泉巷",
+      "highway": "residential",
+      "lng": 110.486608,
+      "lat": 24.780221
+    },
+    {
+      "name": "宝泉巷",
+      "highway": "residential",
+      "lng": 110.485966,
+      "lat": 24.781152
+    },
+    {
+      "name": "将军路",
+      "highway": "residential",
+      "lng": 110.47521,
+      "lat": 24.776228
+    },
+    {
+      "name": "抗战路",
+      "highway": "secondary",
+      "lng": 110.491755,
+      "lat": 24.772295
+    },
+    {
+      "name": "抗战路",
+      "highway": "secondary",
+      "lng": 110.487787,
+      "lat": 24.763963
+    },
+    {
+      "name": "抗战路",
+      "highway": "tertiary",
+      "lng": 110.489124,
+      "lat": 24.766937
+    },
+    {
+      "name": "朝霞路",
+      "highway": "secondary",
+      "lng": 110.508861,
+      "lat": 24.753335
+    },
+    {
+      "name": "朝霞路",
+      "highway": "secondary",
+      "lng": 110.50794,
+      "lat": 24.753065
+    },
+    {
+      "name": "朝霞路",
+      "highway": "secondary",
+      "lng": 110.512652,
+      "lat": 24.754836
+    },
+    {
+      "name": "朝霞路",
+      "highway": "secondary",
+      "lng": 110.513136,
+      "lat": 24.75493
+    },
+    {
+      "name": "林溪路",
+      "highway": "tertiary",
+      "lng": 110.522493,
+      "lat": 24.74271
+    },
+    {
+      "name": "林溪路",
+      "highway": "tertiary",
+      "lng": 110.52189,
+      "lat": 24.74504
+    },
+    {
+      "name": "林溪路",
+      "highway": "tertiary",
+      "lng": 110.518707,
+      "lat": 24.747876
+    },
+    {
+      "name": "林溪路",
+      "highway": "tertiary",
+      "lng": 110.522079,
+      "lat": 24.741247
+    },
+    {
+      "name": "桂花路",
+      "highway": "pedestrian",
+      "lng": 110.489658,
+      "lat": 24.778676
+    },
+    {
+      "name": "桂花路",
+      "highway": "pedestrian",
+      "lng": 110.490462,
+      "lat": 24.778402
+    },
+    {
+      "name": "桂花路",
+      "highway": "pedestrian",
+      "lng": 110.490998,
+      "lat": 24.779826
+    },
+    {
+      "name": "桂花路",
+      "highway": "pedestrian",
+      "lng": 110.491025,
+      "lat": 24.780076
+    },
+    {
+      "name": "滨江路",
+      "highway": "residential",
+      "lng": 110.492754,
+      "lat": 24.78125
+    },
+    {
+      "name": "滨江路",
+      "highway": "pedestrian",
+      "lng": 110.495929,
+      "lat": 24.785591
+    },
+    {
+      "name": "滨江路",
+      "highway": "residential",
+      "lng": 110.492665,
+      "lat": 24.779729
+    },
+    {
+      "name": "滨江路",
+      "highway": "residential",
+      "lng": 110.492581,
+      "lat": 24.779974
+    },
+    {
+      "name": "玉溪路",
+      "highway": "residential",
+      "lng": 110.475662,
+      "lat": 24.772641
+    },
+    {
+      "name": "田园路",
+      "highway": "tertiary",
+      "lng": 110.501894,
+      "lat": 24.765565
+    },
+    {
+      "name": "田家河桥",
+      "highway": "tertiary",
+      "lng": 110.504707,
+      "lat": 24.766399
+    },
+    {
+      "name": "甲秀桥",
+      "highway": "tertiary",
+      "lng": 110.504842,
+      "lat": 24.758066
+    },
+    {
+      "name": "画山路",
+      "highway": "residential",
+      "lng": 110.475609,
+      "lat": 24.77642
+    },
+    {
+      "name": "画山路",
+      "highway": "residential",
+      "lng": 110.473931,
+      "lat": 24.77432
+    },
+    {
+      "name": "画山路",
+      "highway": "residential",
+      "lng": 110.474355,
+      "lat": 24.77352
+    },
+    {
+      "name": "碧莲巷",
+      "highway": "residential",
+      "lng": 110.482126,
+      "lat": 24.777487
+    },
+    {
+      "name": "神山路",
+      "highway": "residential",
+      "lng": 110.487128,
+      "lat": 24.787062
+    },
+    {
+      "name": "福源路",
+      "highway": "residential",
+      "lng": 110.474604,
+      "lat": 24.7789
+    },
+    {
+      "name": "芙蓉路",
+      "highway": "residential",
+      "lng": 110.490344,
+      "lat": 24.78116
+    },
+    {
+      "name": "莘园路",
+      "highway": "tertiary",
+      "lng": 110.510865,
+      "lat": 24.762025
+    },
+    {
+      "name": "蟠桃路",
+      "highway": "secondary",
+      "lng": 110.485954,
+      "lat": 24.776876
+    },
+    {
+      "name": "蟠桃路",
+      "highway": "secondary",
+      "lng": 110.485412,
+      "lat": 24.776923
+    },
+    {
+      "name": "蟠桃路",
+      "highway": "secondary",
+      "lng": 110.478172,
+      "lat": 24.777888
+    },
+    {
+      "name": "西街",
+      "highway": "pedestrian",
+      "lng": 110.490631,
+      "lat": 24.778303
+    },
+    {
+      "name": "西街",
+      "highway": "pedestrian",
+      "lng": 110.488882,
+      "lat": 24.776359
+    },
+    {
+      "name": "观莲路",
+      "highway": "tertiary",
+      "lng": 110.495278,
+      "lat": 24.770388
+    },
+    {
+      "name": "观莲路",
+      "highway": "tertiary",
+      "lng": 110.499629,
+      "lat": 24.769935
+    },
+    {
+      "name": "进士路",
+      "highway": "residential",
+      "lng": 110.490449,
+      "lat": 24.772361
+    },
+    {
+      "name": "阳新公路",
+      "highway": "tertiary",
+      "lng": 110.503058,
+      "lat": 24.767099
+    },
+    {
+      "name": "阳新公路",
+      "highway": "tertiary",
+      "lng": 110.557701,
+      "lat": 24.7751
+    },
+    {
+      "name": "龙岳路",
+      "highway": "tertiary",
+      "lng": 110.479659,
+      "lat": 24.777011
+    },
+    {
+      "name": "龙岳路",
+      "highway": "residential",
+      "lng": 110.473819,
+      "lat": 24.77329
+    },
+    {
+      "name": "龙湾路",
+      "highway": "tertiary",
+      "lng": 110.51287,
+      "lat": 24.744033
+    },
+    {
+      "name": "龙湾路",
+      "highway": "tertiary",
+      "lng": 110.51209,
+      "lat": 24.739946
+    },
+    {
+      "name": "龙湾路",
+      "highway": "tertiary",
+      "lng": 110.512599,
+      "lat": 24.741023
+    }
+  ]
+}
