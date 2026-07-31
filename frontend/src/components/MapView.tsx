@@ -3,9 +3,15 @@ import {
   Map as MLMap,
   NavigationControl,
   Popup,
+  setWorkerUrl,
   type GeoJSONSource,
   type StyleSpecification,
 } from 'maplibre-gl'
+// rolldown-vite 不会把 maplibre 通过 import.meta.url 相对定位的 worker 拷进产物
+// （dev 预构建与生产构建同病），worker 404 会导致 load 事件永不触发、
+// 所有 GeoJSON 图层（人物/路线/淹没区）整体不渲染；这里用 ?worker&url
+// 让 Vite 显式打包 worker（含其 shared 依赖）并注入真实产物地址
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import type { FeatureCollection } from 'geojson'
 import type { AccessScanResponse, ActiveTransfer, Evacuee, FloodFrame, Profile, ScheduleState } from '../types'
 import { fetchAccessScan } from '../api/client'
@@ -17,6 +23,8 @@ import { buildRoutePlan, haversine, hazardOf, movingDotAt, ROUTE_STRATEGY, statu
 /** 演示城镇：广西阳朔县城（见 mock/data.ts，老城区—阳朔公园一带） */
 const INITIAL_CENTER: [number, number] = [110.489, 24.779]
 const INITIAL_ZOOM = 15.2
+
+setWorkerUrl(maplibreWorkerUrl)
 
 /**
  * 双底图：OSM 街道 + Esri 卫星影像（免费瓦片，非实时影像；
