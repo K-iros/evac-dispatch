@@ -6,3 +6,7 @@ nginx.conf text eol=lf
 
 # 字形文件为二进制,禁止行尾转换
 *.pbf binary
+
+# 后端数据 JSON 参与落盘缓存指纹 SHA256 校验(二期决策 1),
+# 强制 LF(包括 Windows 检出),保证本地/服务器读到字节一致、指纹跨平台命中
+backend/data/*.json text eol=lf
