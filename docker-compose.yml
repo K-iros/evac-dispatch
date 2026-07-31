@@ -33,6 +33,10 @@ services:
     container_name: evac-frontend
     ports:
       - "80:80"
+    # 落地页以只读卷挂到 nginx 子目录，对外产出 http://<host>/intro/；
+    # 作战板 SPA 仍占根路径，两者不冲突（landing 内部资源均为相对路径）
+    volumes:
+      - ./landing:/usr/share/nginx/html/intro:ro
     depends_on:
       - backend
     restart: unless-stopped

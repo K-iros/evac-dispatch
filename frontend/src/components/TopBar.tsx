@@ -71,7 +71,7 @@ export default function TopBar({
   const current = frames[frameIndex]
 
   return (
-    <header className="flex items-center gap-4 border-b border-gray-200 bg-white px-4 py-2">
+    <header className="flex items-center gap-4 overflow-x-auto border-b border-gray-200 bg-white px-4 py-2 md:overflow-x-visible">
       <div className="flex items-center gap-3">
         <h1 className="shrink-0 text-base font-bold text-gray-900">灾前疏散调度作战板</h1>
 

@@ -7,6 +7,9 @@ taste-skill/
 /*.png
 landing/verify_*.png
 
+# 落地页配图加工原料(gen_landing_assets.py 输入,12MB+,成品已入库)
+scripts/raw_shots/
+
 # 日志
 *.log
 

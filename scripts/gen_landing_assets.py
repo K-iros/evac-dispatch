@@ -1,66 +1,58 @@
 # -*- coding: utf-8 -*-
-"""整理落地页素材：从项目根目录的真实 e2e 截图裁剪出干净的产品图。
+"""整理落地页素材：从 scripts/raw_shots/ 的实机截图裁剪出各槽位适配图。
 
-去掉右侧/底部滚动条与截图残留的黑色区域，输出到 landing/assets/。
+每个裁剪框按落地页对应卡片的显示比例反推，保证 object-fit:cover 下
+关键信息（倒推链、改派弹窗、救助清单等）不被裁掉。
+cmp-schedule 原图为竖版名单栏，拼为双列横幅以适配对比卡。
 """
 from pathlib import Path
 
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
+RAW = ROOT / "scripts" / "raw_shots"
 OUT = ROOT / "landing" / "assets"
 OUT.mkdir(parents=True, exist_ok=True)
 
 
-def autocrop_dark(img: Image.Image, threshold: int = 24) -> Image.Image:
-    """裁掉右侧与底部整列/整行近黑的区域（截图残留的黑边）。"""
-    gray = img.convert("L")
-    w, h = gray.size
-    px = gray.load()
-
-    right = w
-    for x in range(w - 1, -1, -1):
-        col_max = max(px[x, y] for y in range(0, h, 4))
-        if col_max > threshold:
-            right = x + 1
-            break
-    bottom = h
-    for y in range(h - 1, -1, -1):
-        row_max = max(px[x, y] for x in range(0, right, 4))
-        if row_max > threshold:
-            bottom = y + 1
-            break
-    return img.crop((0, 0, right, bottom))
-
-
-def prep(src: str, dst: str, trim: tuple[int, int, int, int] = (0, 0, 0, 0)) -> None:
-    """trim = (left, top, right, bottom) 额外裁剪像素。"""
-    img = Image.open(ROOT / src).convert("RGB")
-    img = autocrop_dark(img)
-    l, t, r, b = trim
-    w, h = img.size
-    img = img.crop((l, t, w - r, h - b))
-    img.save(OUT / dst, "PNG")
-    print(f"{dst}: {img.size[0]}x{img.size[1]}")
-
-
 def box(src: str, dst: str, region: tuple[int, int, int, int]) -> None:
     """按绝对坐标 (left, top, right, bottom) 裁剪。"""
-    img = Image.open(ROOT / src).convert("RGB").crop(region)
+    img = Image.open(RAW / src).convert("RGB").crop(region)
     img.save(OUT / dst, "PNG")
-    print(f"{dst}: {img.size[0]}x{img.size[1]}")
+    w, h = img.size
+    print(f"{dst}: {w}x{h}  ratio {w / h:.2f}")
+
+
+def schedule_montage(src: str, dst: str) -> None:
+    """竖版名单栏切成上下两段并排，拼成横幅（对比右卡 ~2.2:1）。"""
+    img = Image.open(RAW / src).convert("RGB")
+    left = img.crop((0, 65, 456, 470))    # 黄阿婆 / 陈先生 / 蒙先生
+    right = img.crop((0, 465, 456, 870))  # 蒋阿婆 / 欧奶奶 / 罗奶奶
+    gap = 2
+    canvas = Image.new("RGB", (left.width * 2 + gap, left.height), "#e5e7eb")
+    canvas.paste(left, (0, 0))
+    canvas.paste(right, (left.width + gap, 0))
+    canvas.save(OUT / dst, "PNG")
+    w, h = canvas.size
+    print(f"{dst}: {w}x{h}  ratio {w / h:.2f}")
 
 
 if __name__ == "__main__":
-    # 竖幅路线图：接人段/护送段/障碍标记/避难所，落地页主视觉
-    prep("e2e_verify_step5_locate_lu_route_wide.png", "shot-route.png", (0, 0, 14, 16))
-    # 淹没推演：水深分级蓝色图层 + 路段三态着色 + 图例
-    prep("e2e_step2_frame21_map.png", "shot-flood.png", (0, 0, 14, 16))
-    # 作战板全景：名单 + 地图 + 避难所失效弹窗 + 整所转移横幅
-    prep("verify_e2e_step5_shelter_popup.png", "shot-board.png", (0, 0, 14, 16))
-    # 路径卡：串行任务 + 倒推链 + 补位演练按钮
-    prep("verify_e2e_step6_zhangnainai.png", "shot-card.png", (0, 0, 14, 16))
-    # 盲人路书卡：视障引导路线 + 失效告警（只取卡片区域，右缘止于卡片边界 x=342）
-    box("e2e_step6_playback.png", "shot-roadbook.png", (26, 161, 342, 380))
-    # 自动改派：避难所被淹改派横幅 + P0/P1 清单（去除右侧黑区）
-    box("reverify_frame18_reassign.png", "shot-reassign.png", (0, 0, 652, 406))
+    # Hero 竖幅（~0.69）：卢阿姨轮椅路线 + 接人段 + 陈社工，通向避难所方向
+    box("shot-route.png", "shot-route.png", (1283, 77, 2204, 1409))
+    # Bento 淹没推演（~1.85）：水深图层 + 红色失效带 + 三态路段，去掉右上缩放控件
+    box("shot-flood.png", "shot-flood.png", (962, 167, 2695, 1104))
+    # Bento 倒推链（顶左展示）：张奶奶行 + 「最迟出发怎么算的」逐段收紧面板
+    box("shot-card.png", "shot-card.png", (0, 140, 860, 900))
+    # Bento 无障碍对比（~1.44）：轮椅×步行绕行倍率面板
+    box("shot-access.png", "shot-access.png", (489, 147, 1006, 506))
+    # Bento 自动改派（~3.11）：山水园临江避难点失效弹窗 + 红色失效路线带
+    box("shot-reassign.png", "shot-reassign.png", (1046, 530, 2672, 1053))
+    # Bento 分级响应（~2.60）：无路可走·救助优先级红色清单 + 导出按钮
+    box("shot-board.png", "shot-board.png", (0, 1230, 888, 1552))
+    # Bento 语音路书（~1.70）：横幅取标题 + 护送里程 + 播报按钮 + 首句叙述，适配宽扁槽位
+    box("shot-roadbook.png", "shot-roadbook.png", (505, 20, 1075, 355))
+    # 对比左卡（~2.18）：卫星底图纯淹没视图，避开顶部告警横幅与底部图例
+    box("cmp-flood.png", "cmp-flood.png", (0, 220, 2314, 1282))
+    # 对比右卡：名单栏双列横幅
+    schedule_montage("cmp-schedule.png", "cmp-schedule.png")

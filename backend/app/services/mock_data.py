@@ -10,8 +10,15 @@ Valhalla pedestrian(wheelchair/blind/foot) 实算 + RDP 简化；匹配为
 第十一节"最迟出发时间真实化"：latestDeparture / arriveBy 不是
 mock 常量，而是由该情景的 landlab 水深场沿路径反推（departure 模块，
 路段失效 = 画像水深阈值 或 v·d 失稳超限），与时间轴同一模拟时钟。
+
+第二期决策 1「调度结果落盘缓存」：反推链纯 CPU 密集（约 9 分钟/
+情景）且输入 100% 静态，故 scripts/gen_schedule_cache.py 预计算导出
+backend/data/schedule_{scenario}.json（内嵌输入文件 SHA256 指纹）随
+仓库分发；build_mock_schedule 指纹匹配则毫秒级加载，否则回落实时
+计算并写回缓存——杜绝"改了数据集但线上还是旧结果"的隐性 bug。
 """
 
+import hashlib
 import json
 import math
 from functools import lru_cache
@@ -30,7 +37,8 @@ from app.models.schemas import (
     ShelterTransfer,
 )
 
-DATA_PATH = Path(__file__).resolve().parents[2] / "data" / "yangshuo_schedule.json"
+DATA_DIR = Path(__file__).resolve().parents[2] / "data"
+DATA_PATH = DATA_DIR / "yangshuo_schedule.json"
 
 # 与前端 routeUtils 一致的步速（m/s）：接人段帮扶者独行 / 护送段按画像折减
 PICKUP_SPEED = 1.4
@@ -73,11 +81,77 @@ def _segment_durations_min(
     return durations
 
 
+def _cache_path(scenario: str) -> Path:
+    """该情景的调度结果落盘缓存路径（决策 1，随仓库/镜像分发）。"""
+    return DATA_DIR / f"schedule_{scenario}.json"
+
+
+def _input_fingerprint(scenario: str) -> dict[str, str] | None:
+    """缓存指纹：数据集 + 该情景洪水帧文件的 SHA256。
+
+    任一输入文件缺失（洪水帧回退演示帧）返回 None → 不启用缓存。
+    """
+    inputs: dict[str, str] = {}
+    for path in (DATA_PATH, DATA_DIR / f"flood_frames_{scenario}.json"):
+        if not path.exists():
+            return None
+        inputs[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return inputs
+
+
+def _load_schedule_cache(
+    scenario: str, fingerprint: dict[str, str] | None
+) -> ScheduleState | None:
+    """指纹匹配则毫秒级加载落盘缓存；缺失/损坏/指纹不符返回 None。"""
+    if fingerprint is None:
+        return None
+    path = _cache_path(scenario)
+    if not path.exists():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if payload.get("inputs") != fingerprint:
+            return None
+        return ScheduleState.model_validate(payload["state"])
+    except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+        return None
+
+
+def _write_schedule_cache(
+    scenario: str, fingerprint: dict[str, str] | None, state: ScheduleState
+) -> None:
+    """实时计算结果写回落盘缓存（写失败不影响服务，只丢缓存）。"""
+    if fingerprint is None:
+        return
+    payload = {
+        "inputs": fingerprint,
+        "state": state.model_dump(mode="json", by_alias=True),
+    }
+    try:
+        _cache_path(scenario).write_text(
+            json.dumps(payload, ensure_ascii=False), encoding="utf-8"
+        )
+    except OSError:
+        pass
+
+
 @lru_cache(maxsize=4)
 def build_mock_schedule(scenario: str = DEFAULT_SCENARIO) -> ScheduleState:
-    """构建该情景的调度态势：最迟出发时间由水深场沿路径反推。"""
+    """该情景的调度态势：落盘缓存指纹匹配则秒级加载（决策 1），
+    否则回落实时反推并写回缓存。"""
     if scenario not in SCENARIOS:
         scenario = DEFAULT_SCENARIO
+    fingerprint = _input_fingerprint(scenario)
+    cached = _load_schedule_cache(scenario, fingerprint)
+    if cached is not None:
+        return cached
+    state = _compute_schedule(scenario)
+    _write_schedule_cache(scenario, fingerprint, state)
+    return state
+
+
+def _compute_schedule(scenario: str) -> ScheduleState:
+    """实时计算该情景的调度态势：最迟出发时间由水深场沿路径反推。"""
     data = _load_dataset()
     frames = compute_flood_frames(scenario)
     horizon = float(frames[-1].minute) if frames else 1440.0

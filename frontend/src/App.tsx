@@ -175,6 +175,8 @@ export default function App() {
   const [playSpeed, setPlaySpeed] = useState<1 | 4>(1)
   // AI 派单简报抽屉（第十二节 P0）
   const [briefingsOpen, setBriefingsOpen] = useState(false)
+  // 二期决策 2 窄屏止血：<768px 常驻提示横幅（可关闭，桌面端 md:hidden 零影响）
+  const [mobileNoticeClosed, setMobileNoticeClosed] = useState(false)
 
   useEffect(() => {
     fetchScenarios().then(setScenarios)
@@ -313,6 +315,22 @@ export default function App() {
 
   return (
     <div className="flex h-full flex-col bg-gray-100">
+      {/* 窄屏止血横幅（二期决策 2）：仅 <768px 可见，作战板为指挥端设计 */}
+      {!mobileNoticeClosed && (
+        <div className="flex items-center gap-2 bg-amber-100 px-3 py-1.5 text-xs text-amber-800 md:hidden">
+          <span className="min-w-0 flex-1">
+            💻 本作战板为指挥端设计，建议桌面端访问获得完整体验
+          </span>
+          <button
+            type="button"
+            onClick={() => setMobileNoticeClosed(true)}
+            className="flex-none rounded px-1.5 py-0.5 font-semibold text-amber-700 hover:bg-amber-200"
+            aria-label="关闭提示"
+          >
+            ✕
+          </button>
+        </div>
+      )}
       <TopBar
         alertLevel={alertLevel}
         onAlertChange={setAlertLevel}

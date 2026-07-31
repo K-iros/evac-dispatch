@@ -164,6 +164,9 @@ export default function MapView({
   const [scanResult, setScanResult] = useState<AccessScanResponse | null>(null)
   // 语音路书面板（P1，盲人户入口）
   const [roadbookOpen, setRoadbookOpen] = useState(false)
+  // 图例展开态（二期决策 2 窄屏止血）：<768px 默认收起成小按钮，
+  // 桌面端由 md:block 常显，此态不影响
+  const [legendOpen, setLegendOpen] = useState(false)
   // 避免 map click 闭包引用过期的回调
   const onSelectRef = useRef(onSelectEvacuee)
   onSelectRef.current = onSelectEvacuee
@@ -1138,9 +1141,22 @@ export default function MapView({
         </div>
       )}
 
-      {/* 图例 */}
-      <div className="absolute bottom-3 right-3 z-10 rounded-lg bg-white/95 px-3 py-2 text-[11px] leading-5 text-gray-600 shadow-md">
-        <div className="flex items-center gap-1.5">
+      {/* 图例（二期决策 2 窄屏止血：限宽+折行防溢出，<768px 默认收起成小按钮） */}
+      {!legendOpen && (
+        <button
+          type="button"
+          onClick={() => setLegendOpen(true)}
+          className="absolute bottom-3 right-3 z-10 rounded-lg bg-white/95 px-3 py-1.5 text-[11px] font-semibold text-gray-600 shadow-md md:hidden"
+        >
+          图例
+        </button>
+      )}
+      <div
+        className={`absolute bottom-3 right-3 z-10 max-w-[calc(100vw-24px)] rounded-lg bg-white/95 px-3 py-2 text-[11px] leading-5 text-gray-600 shadow-md ${
+          legendOpen ? '' : 'hidden md:block'
+        }`}
+      >
+        <div className="flex flex-wrap items-center gap-1.5">
           <span className="inline-block h-2.5 w-2.5 rounded-full bg-orange-500" /> 待撤离
           <span className="ml-2 inline-block h-2.5 w-2.5 rounded-full bg-red-500" /> 未匹配
           <span className="ml-2 inline-block h-2.5 w-2.5 rounded-full bg-gray-400 text-center text-[8px] font-bold leading-[10px] text-white">✓</span>{' '}
@@ -1150,7 +1166,7 @@ export default function MapView({
           <span className="ml-2 inline-block h-2.5 w-2.5 rounded-full bg-red-600 text-center text-[8px] font-bold leading-[10px] text-white">✕</span>{' '}
           失效
         </div>
-        <div className="mt-1 flex items-center gap-1.5">
+        <div className="mt-1 flex flex-wrap items-center gap-1.5">
           <span className="inline-block h-0.5 w-4 border-t-2 border-dashed border-amber-500" /> 接人段
           <span className="ml-2 inline-block h-0.5 w-4 bg-emerald-500" /> 护送段
           {/* 水深六档渐变（功能 A）+ v·d 急流危险区（功能 B） */}
@@ -1158,13 +1174,22 @@ export default function MapView({
           水深 0.05→2m+
           <span className="ml-2 inline-block h-2.5 w-2.5 rounded-sm border border-red-700 bg-orange-500/60" /> 急流 v·d
         </div>
-        <div className="mt-1 flex items-center gap-1.5">
+        <div className="mt-1 flex flex-wrap items-center gap-1.5">
           <span className="inline-block h-0.5 w-4 bg-green-600" /> 畅通
           <span className="ml-2 inline-block h-0.5 w-4 bg-yellow-500" /> 下一小时将失效
           <span className="ml-2 inline-block h-0.5 w-4 bg-red-500" /> 已失效
           <span className="ml-2 inline-block h-2.5 w-2.5 rounded-full bg-amber-600" /> 垂直避险
           <span className="ml-2 inline-block h-0.5 w-4 border-t-2 border-dashed border-violet-600" /> 整所转移
         </div>
+        {legendOpen && (
+          <button
+            type="button"
+            onClick={() => setLegendOpen(false)}
+            className="mt-1 w-full rounded bg-gray-100 py-0.5 text-center text-[10px] font-semibold text-gray-500 md:hidden"
+          >
+            收起图例
+          </button>
+        )}
       </div>
 
       {/* 路径规划卡片 */}

@@ -494,28 +494,78 @@ a{color:inherit;text-decoration:none}
   .chain.flow .chain-node .chain-ico{animation:none}
 }
 
-/* ============ 现场扫码体验 ============ */
-.tryit{max-width:1280px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
-.tryit-inner{
+/* ============ 上手指南 ============ */
+.guide-grid{
+  display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);
+  gap:clamp(26px,4vw,56px);align-items:center;
+  margin-bottom:clamp(36px,5vw,60px);
+}
+/* 示意作战板：纯 CSS/SVG 摹绘三分区，编号与右侧讲解一一对应 */
+.gd-board{
   border:1px solid var(--line-strong);border-radius:var(--r-panel);
   background:linear-gradient(150deg,var(--bg-panel),var(--bg-raise));
-  padding:clamp(28px,4vw,50px);
-  display:grid;grid-template-columns:1fr auto;gap:clamp(28px,5vw,60px);
-  align-items:center;position:relative;overflow:hidden;
+  padding:16px;display:flex;flex-direction:column;gap:10px;
+  box-shadow:0 18px 48px rgba(0,0,0,.34);
 }
-.tryit-inner::before{content:"";position:absolute;right:-120px;top:-120px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(232,166,61,.10),transparent 65%);pointer-events:none}
-.tryit-txt h2{font-size:clamp(22px,2.6vw,32px);font-weight:800;letter-spacing:-.01em;line-height:1.3;margin-bottom:14px}
-.tryit-txt>p{color:var(--text-2);max-width:32em;margin-bottom:22px}
-.tryit-steps{display:flex;flex-direction:column;gap:10px}
-.tryit-steps li{list-style:none;display:flex;gap:12px;align-items:baseline;font-size:14px;color:var(--text-2)}
-.tryit-steps b{font-family:var(--font-mono);color:var(--amber);flex:none}
-.qr-card{background:#fff;border-radius:14px;padding:16px;flex:none;box-shadow:0 18px 50px rgba(0,0,0,.5);text-align:center}
-.qr-card img{width:180px;height:180px}
-.qr-card figcaption{margin-top:8px;font-size:12px;color:#5b6470;font-family:var(--font-mono)}
-@media(max-width:760px){
-  .tryit-inner{grid-template-columns:1fr;justify-items:center;text-align:center}
-  .tryit-steps li{justify-content:center}
+.gd-zone{position:relative;border:1px solid var(--line);border-radius:10px;background:var(--bg-raise)}
+.gd-num{
+  position:absolute;top:-10px;left:-10px;z-index:2;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--amber);color:#0b0f14;
+  font-family:var(--font-mono);font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 4px rgba(232,166,61,.16);
 }
+.gd-top{display:flex;align-items:center;gap:7px;padding:10px 12px}
+.gd-pill{font-family:var(--font-mono);font-size:11px;color:var(--text-3);border:1px solid var(--line);border-radius:999px;padding:3px 9px;white-space:nowrap;flex:none}
+.gd-pill.is-on{color:#fff;background:#c0392b;border-color:#c0392b;font-weight:700}
+.gd-slider{flex:1;min-width:48px;height:4px;border-radius:4px;background:var(--line-strong);position:relative}
+.gd-slider i{position:absolute;top:0;bottom:0;left:0;width:55%;border-radius:4px;background:linear-gradient(90deg,rgba(232,166,61,.45),var(--amber))}
+.gd-slider::after{content:"";position:absolute;left:55%;top:50%;width:12px;height:12px;border-radius:50%;background:var(--amber);transform:translate(-50%,-50%);box-shadow:0 0 0 4px var(--amber-soft)}
+.gd-clock{font-family:var(--font-mono);font-size:11px;color:var(--text-2);flex:none}
+.gd-main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.55fr);gap:10px}
+.gd-list{padding:12px 10px 10px;display:flex;flex-direction:column;gap:7px}
+.gd-row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11.5px;color:var(--text-2);border:1px solid var(--line);border-radius:8px;padding:7px 9px}
+.gd-row b{font-weight:600;color:var(--text);white-space:nowrap}
+.gd-row .t{font-family:var(--font-mono);color:var(--amber)}
+.gd-row.is-hot{border-color:rgba(224,82,82,.5)}
+.gd-row.is-hot .t{color:#e26060}
+.gd-row.is-done b,.gd-row.is-done .t{color:var(--text-3)}
+.gd-map{min-height:170px}
+.gd-map svg{position:absolute;inset:0;width:100%;height:100%;border-radius:9px}
+.guide-legend h3,.guide-col h3{font-size:clamp(19px,2.1vw,24px);font-weight:800;letter-spacing:-.01em;line-height:1.35}
+.guide-legend h3{margin-bottom:20px}
+.guide-legend ol{display:flex;flex-direction:column;gap:18px}
+.guide-legend li{list-style:none;display:flex;gap:14px}
+.gl-num{
+  width:22px;height:22px;flex:none;margin-top:2px;border-radius:50%;
+  border:1px solid var(--amber-line);color:var(--amber);
+  font-family:var(--font-mono);font-size:12px;
+  display:flex;align-items:center;justify-content:center;
+}
+.guide-legend h4,.gc-steps h4{font-size:14.5px;font-weight:700;margin-bottom:4px}
+.guide-legend p,.gc-steps p{font-size:13.5px;color:var(--text-2);line-height:1.75}
+.guide-cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,3vw,36px)}
+.guide-col{
+  border:1px solid var(--line);border-radius:var(--r-panel);
+  background:var(--bg-raise);padding:clamp(22px,3vw,32px);
+}
+.gc-tag{font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;color:var(--amber);text-transform:uppercase}
+.guide-col h3{margin:10px 0 18px}
+.gc-steps{display:flex;flex-direction:column;gap:16px}
+.gc-steps li{list-style:none;display:flex;gap:14px}
+.gc-steps li>b{font-family:var(--font-mono);color:var(--amber);flex:none;font-size:13px;padding-top:2px}
+.ui-k{
+  display:inline-block;padding:0 7px;margin:0 1px;
+  border:1px solid var(--line-strong);border-radius:6px;
+  font-size:12px;line-height:20px;color:var(--text);
+  background:var(--bg-panel);font-family:var(--font-mono);white-space:nowrap;
+}
+.guide-tips{margin-top:clamp(20px,3vw,30px);display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:center}
+.guide-tips span{font-size:12.5px;color:var(--text-2);border:1px solid var(--line);border-radius:999px;padding:7px 14px;background:var(--bg-raise)}
+.guide-tips b{color:var(--amber);font-family:var(--font-mono);margin-right:6px;font-size:11px}
+@media(max-width:960px){.guide-grid{grid-template-columns:1fr}.gd-top{flex-wrap:wrap}}
+@media(max-width:860px){.guide-cols{grid-template-columns:1fr}}
 
 /* ============ noanim：动画终态直出（验证/回归用） ============ */
 html.noanim{scroll-behavior:auto}
@@ -555,9 +605,10 @@ html.noanim .chain .chain-node .chain-ico{animation:none}
     <a href="#story">为什么</a>
     <a href="#how">怎么算</a>
     <a href="#features">作战板</a>
+    <a href="#guide">上手指南</a>
     <a href="#tech">技术底座</a>
   </div>
-  <a class="btn btn-amber js-demo" href="http://localhost:5200" target="_blank" rel="noopener">进入作战板</a>
+  <a class="btn btn-amber js-demo" href="http://121.41.172.35/" target="_blank" rel="noopener">进入作战板</a>
 </nav>
 
 <!-- ================= Hero ================= -->
@@ -568,7 +619,7 @@ html.noanim .chain .chain-node .chain-ico{animation:none}
     <h1 class="stagger st-2">洪水到来之前，<br />每个人的<span class="accent">出发时刻</span>都已算好</h1>
     <p class="hero-sub stagger st-3">在预警窗口期内推演水情，为弱势住户倒推最迟出发时间，把帮扶任务派给对的人，并追踪到场与补位。</p>
     <div class="hero-ctas stagger st-4">
-      <a class="btn btn-amber btn-lg js-demo" href="http://localhost:5200" target="_blank" rel="noopener">进入作战板</a>
+      <a class="btn btn-amber btn-lg js-demo" href="http://121.41.172.35/" target="_blank" rel="noopener">进入作战板</a>
       <a class="btn btn-ghost btn-lg" href="#how">看它怎么算</a>
     </div>
   </div>
@@ -705,7 +756,7 @@ html.noanim .chain .chain-node .chain-ico{animation:none}
       <div class="cmp-tag">常见做法</div>
       <h3>只有一张淹没图</h3>
       <p>知道哪片区域会进水，却不知道谁来不及、谁该先走、走哪条路。最后的决定，还是留给了那个犹豫的人。</p>
-      <div class="cmp-img"><img src="assets/shot-flood.png" alt="仅有淹没范围的洪水地图，蓝色水深分级覆盖老城区" loading="lazy" /></div>
+      <div class="cmp-img"><img src="assets/cmp-flood.png" alt="仅有淹没范围的洪水地图：卫星底图上蓝色水深与红色急流区域覆盖老城区" loading="lazy" /></div>
     </figure>
     <div class="cmp-vs" aria-hidden="true">
       <span class="vs-badge">VS</span>
@@ -715,7 +766,7 @@ html.noanim .chain .chain-node .chain-ico{animation:none}
       <div class="cmp-tag">本系统</div>
       <h3>一份到人的时间表</h3>
       <p>同一场推演落到每一户：最迟出发时刻、无障碍路线、由谁护送、失联如何补位。把犹豫，变成一个能执行的动作。</p>
-      <div class="cmp-img"><img src="assets/shot-board.png" alt="调度作战板：待撤离名单按剩余时间排序，右侧地图展示路线与避难所" loading="lazy" /></div>
+      <div class="cmp-img"><img src="assets/cmp-schedule.png" alt="待撤离名单特写：每位住户列出已安置避难所或剩余出发时间、帮扶人数与匹配状态" loading="lazy" /></div>
     </figure>
   </div>
 </section>
@@ -773,6 +824,148 @@ html.noanim .chain .chain-node .chain-ico{animation:none}
   </div>
 </section>
 
+<!-- ================= 上手指南 ================= -->
+<section class="section" id="guide">
+  <div class="section-head rv">
+    <span class="eyebrow">上手指南</span>
+    <h2 style="margin-top:22px">三分钟，学会指挥一场撤离</h2>
+    <p>在电脑端打开作战板，照着下面做。每一步提到的，都是界面上真实存在的按钮。</p>
+  </div>
+
+  <!-- 怎么看：示意作战板 + 三区讲解 -->
+  <div class="guide-grid">
+    <div class="gd-board rv" aria-hidden="true">
+      <div class="gd-zone">
+        <span class="gd-num">1</span>
+        <div class="gd-top">
+          <span class="gd-pill">预备</span>
+          <span class="gd-pill">待命</span>
+          <span class="gd-pill is-on">出动</span>
+          <span class="gd-pill">2024-06 漓江洪水 ▾</span>
+          <span class="gd-slider"><i></i></span>
+          <span class="gd-clock">T+13h · 13:00</span>
+          <span class="gd-pill">▶ 4x</span>
+        </div>
+      </div>
+      <div class="gd-main">
+        <div class="gd-zone gd-list">
+          <span class="gd-num">2</span>
+          <div class="gd-row is-hot"><b>♿ 张奶奶</b><span class="t">02:10 前出发</span></div>
+          <div class="gd-row"><b>🦯 陈先生</b><span class="t">02:55 前出发</span></div>
+          <div class="gd-row is-done"><b>🧓 黄阿婆</b><span class="t">已安置</span></div>
+          <div class="gd-row is-hot"><b>⚠ 无路可走</b><span class="t">P0 × 2</span></div>
+        </div>
+        <div class="gd-zone gd-map">
+          <span class="gd-num">3</span>
+          <svg viewBox="0 0 260 170" preserveAspectRatio="none">
+            <rect width="260" height="170" fill="#101820"/>
+            <path d="M0 128 C50 118 90 140 150 132 S 230 118 260 126 L260 170 L0 170 Z" fill="rgba(56,132,199,.32)"/>
+            <path d="M0 143 C60 135 110 152 180 146 S 240 138 260 142 L260 170 L0 170 Z" fill="rgba(56,132,199,.5)"/>
+            <path d="M18 30 L120 34 M60 8 L64 120 M120 34 L228 26 M170 30 L176 96" stroke="rgba(232,237,242,.16)" stroke-width="3" fill="none"/>
+            <path d="M28 150 L96 140" stroke="#e05252" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <path d="M40 92 L86 66" stroke="#e8a63d" stroke-width="3" stroke-dasharray="6 5" fill="none" stroke-linecap="round"/>
+            <path d="M86 66 C120 48 160 52 196 42" stroke="#3fa66a" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+            <circle cx="40" cy="92" r="6" fill="#e8a63d"/>
+            <circle cx="86" cy="66" r="6" fill="#0b0f14" stroke="#e8edf2" stroke-width="2"/>
+            <rect x="188" y="30" width="18" height="18" rx="5" fill="#3fa66a"/>
+            <path d="M197 34 v10 M192 39 h10" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="guide-legend rv rv-d1">
+      <h3>怎么看：一屏三区</h3>
+      <ol>
+        <li>
+          <span class="gl-num">1</span>
+          <div>
+            <h4>顶栏：响应档位与时间轴</h4>
+            <p>左侧是<span class="ui-k">预备</span><span class="ui-k">待命</span><span class="ui-k">出动</span>三档响应；中间是情景预设下拉框和 24 小时推演时间轴，可拖动、可播放。右侧数据看板实时统计已撤离、在途、未匹配、失联人数。</p>
+          </div>
+        </li>
+        <li>
+          <span class="gl-num">2</span>
+          <div>
+            <h4>左栏：待撤离名单</h4>
+            <p>按最迟出发时间倒计时排序，越紧迫越靠前；红色代表未匹配或即将超时。名单底部是「无路可走 · 救助优先级」清单，任何情景下都无可行路线的人员会自动列入。</p>
+          </div>
+        </li>
+        <li>
+          <span class="gl-num">3</span>
+          <div>
+            <h4>右侧：实时推演地图</h4>
+            <p>琥珀色虚线是帮扶者<b style="color:var(--text)">接人段</b>，绿色实线是<b style="color:var(--text)">护送段</b>；蓝色是逐时水深，变红的路段已失效。左上角可切<span class="ui-k">卫星</span>底图与无障碍对比。</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- 怎么用 / 怎么推演 -->
+  <div class="guide-cols">
+    <div class="guide-col rv">
+      <span class="gc-tag">HOW TO USE</span>
+      <h3>怎么用：从名单到路线</h3>
+      <ol class="gc-steps">
+        <li>
+          <b>01</b>
+          <div>
+            <h4>点开一户，看她的路</h4>
+            <p>在待撤离名单点任意住户，地图立即高亮接人段与护送段，弹出路径卡：谁去接、走多远、耗时几分钟、轮椅绕开了哪个台阶。</p>
+          </div>
+        </li>
+        <li>
+          <b>02</b>
+          <div>
+            <h4>追问这个时刻怎么来的</h4>
+            <p>点住户卡上的<span class="ui-k">最迟出发时间怎么算的</span>，展开倒推链：从避难所沿路线倒着算，哪段路几点失效、扣了多少护送耗时，逐段收紧到最终时刻。</p>
+          </div>
+        </li>
+        <li>
+          <b>03</b>
+          <div>
+            <h4>看容量，导清单</h4>
+            <p>点地图上的避难所徽章看容量占用与满员提示；无路可走清单可直接<span class="ui-k">⤓ 导出清单</span>，交给专业救援力量优先处置。</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+    <div class="guide-col rv rv-d1">
+      <span class="gc-tag">HOW TO SIMULATE</span>
+      <h3>怎么推演：让洪水动起来</h3>
+      <ol class="gc-steps">
+        <li>
+          <b>01</b>
+          <div>
+            <h4>先切到「出动」档</h4>
+            <p>点顶栏的<span class="ui-k">出动</span>。撤离推演只在出动档激活：人员状态沿待命 → 在途 → 护送中 → 已撤离流转，帮扶者小点沿路线移动。</p>
+          </div>
+        </li>
+        <li>
+          <b>02</b>
+          <div>
+            <h4>播放或拖动时间轴</h4>
+            <p>按<span class="ui-k">▶</span>自动播放（可切 4x），或直接拖到任意时刻：水深逐帧上涨，路段由绿转红。留意洪峰前后——临江避难点被淹时，系统会自动改派并触发整所转移。</p>
+          </div>
+        </li>
+        <li>
+          <b>03</b>
+          <div>
+            <h4>换个情景再推一遍</h4>
+            <p>用情景预设切到<span class="ui-k">30年一遇</span>或<span class="ui-k">极端情景</span>，对比同一批住户的倒计时、改派路线和无路可走名单怎么变化。</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="guide-tips rv">
+    <span><b>TIP</b>忘了切出动档？推进时间轴时「出动」按钮会自动脉冲提醒</span>
+    <span><b>TIP</b>演示路径已预计算缓存，断网也能完整推演</span>
+    <span><b>TIP</b>作战板为指挥大屏设计，请在电脑端浏览器打开</span>
+  </div>
+</section>
+
 <!-- ================= 演示数据集 ================= -->
 <div class="numbers">
   <div class="numbers-inner">
@@ -812,31 +1005,12 @@ html.noanim .chain .chain-node .chain-ico{animation:none}
   </div>
 </section>
 
-<!-- ================= 现场扫码体验 ================= -->
-<div class="tryit">
-  <div class="tryit-inner rv">
-    <div class="tryit-txt">
-      <h2>扫码，在你的手机上打开作战板</h2>
-      <p>无需安装，扫码即在浏览器打开完整演示。数据本地兜底，断网也能拖动时间轴、展开每户的倒推链。</p>
-      <ul class="tryit-steps">
-        <li><b>01</b><span>用手机相机或微信扫一扫</span></li>
-        <li><b>02</b><span>浏览器直接打开调度作战板</span></li>
-        <li><b>03</b><span>拖动时间轴，看 24 小时洪水与每户倒计时</span></li>
-      </ul>
-    </div>
-    <figure class="qr-card">
-      <img src="assets/qr-demo.png" alt="扫码打开在线演示的二维码" width="180" height="180" />
-      <figcaption>扫码打开在线演示</figcaption>
-    </figure>
-  </div>
-</div>
-
 <!-- ================= 尾部 CTA ================= -->
 <section class="final">
   <h2 class="rv">预警窗口期，<br />让善意先出发</h2>
   <p class="rv rv-d1">打开作战板，拖动时间轴，看一场 24 小时的洪水如何被拆解成一份人人可执行的时间表。</p>
-  <a class="btn btn-amber btn-lg rv rv-d2 js-demo" href="http://localhost:5200" target="_blank" rel="noopener">进入作战板</a>
-  <div class="hint rv rv-d3">在线演示 <code class="js-demo-url">http://localhost:5200</code>，数据本地兜底，断网也能演示</div>
+  <a class="btn btn-amber btn-lg rv rv-d2 js-demo" href="http://121.41.172.35/" target="_blank" rel="noopener">进入作战板</a>
+  <div class="hint rv rv-d3">在线演示 <code class="js-demo-url">http://121.41.172.35/</code>（建议电脑端打开），数据本地兜底，断网也能演示</div>
 </section>
 
 <!-- ================= 页脚 ================= -->
@@ -902,8 +1076,8 @@ html.noanim .chain .chain-node .chain-ico{animation:none}
   }, { threshold: 0.6 });
   document.querySelectorAll("[data-count]").forEach(function (el) { ioNum.observe(el); });
 
-  /* Demo 地址集中管理：部署后只改 DEMO_URL 这一处（并重跑 scripts/gen_qr.py 生成二维码） */
-  var DEMO_URL = "http://localhost:5200";
+  /* Demo 地址集中管理：换公网地址后只改 DEMO_URL 这一处 */
+  var DEMO_URL = "http://121.41.172.35/";
   document.querySelectorAll(".js-demo").forEach(function (a) { a.href = DEMO_URL; });
   var durl = document.querySelector(".js-demo-url");
   if (durl) durl.textContent = DEMO_URL;
