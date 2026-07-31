@@ -24,8 +24,9 @@ const INITIAL_ZOOM = 15.2
  */
 const MAP_STYLE: StyleSpecification = {
   version: 8,
-  // 文字标注字形服务（含中文的 Noto Sans）
-  glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
+  // 文字标注字形（含中文）：自托管于 public/fonts/，避免外部字形源不可达
+  // 导致带 text-field 的 symbol 图层（人物/避难所图标+姓名）整层不渲染
+  glyphs: '/fonts/{fontstack}/{range}.pbf',
   sources: {
     osm: {
       type: 'raster',
@@ -49,7 +50,7 @@ const MAP_STYLE: StyleSpecification = {
 }
 
 const EMPTY_FC: FeatureCollection = { type: 'FeatureCollection', features: [] }
-const TEXT_FONT = ['Noto Sans Regular']
+const TEXT_FONT = ['Klokantech Noto Sans CJK Regular']
 
 const PROFILE_LABEL: Record<Profile, string> = {
   wheelchair: '♿ 轮椅',
