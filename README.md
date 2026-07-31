@@ -45,7 +45,7 @@ waitan/
 │  ├─ data/                  # yangshuo_schedule.json / flood_frames_*.json / schedule_*.json 缓存
 │  └─ Dockerfile
 ├─ landing/                  # 产品介绍页（部署为 /intro/）
-├─ miniprogram/              # 微信小程序帮扶者端（已冻结，保留代码备用）
+├─ miniprogram/              # 微信小程序帮扶者端（已冻结；规划激活为接单/打卡端，见项目状态）
 ├─ scripts/                  # 数据管线与工具（洪水推演 / 数据集生成 / 调度缓存 / 二维码等）
 ├─ deploy/deploy.sh          # 发布脚本：拉代码 → 构建 → 健康检查 → 预热自检
 ├─ docker-compose.yml        # 生产编排
@@ -90,4 +90,8 @@ docker compose up -d --build     # 或增量发布：bash deploy/deploy.sh
 
 ## 项目状态
 
-第一期（产品闭环，P0/P1 全部完成）已存档于 `PROJECT_CONTEXT_V1.md`；第二期进行中，已完成后端冷启动落盘缓存、手机扫码引导与窄屏止血，决策记录见 `PROJECT_CONTEXT_V2.md`。
+第一期（产品闭环，P0/P1 全部完成）已存档于 `PROJECT_CONTEXT_V1.md`；第二期进行中，已完成后端冷启动落盘缓存、手机端引导与窄屏止血，决策记录见 `PROJECT_CONTEXT_V2.md`。
+
+**规划中**：
+
+- **Web 端调度 → 小程序接收，调度中心与个人联动**：指挥端在作战板派单，帮扶者在微信小程序接单（`accept`）、到场打卡（`checkin`），状态回流作战板形成派单→接单→执行→反馈的完整闭环。小程序端代码已在 `miniprogram/` 保留，后端已留 `accept`/`checkin` 占位接口，属激活而非从零开发。
